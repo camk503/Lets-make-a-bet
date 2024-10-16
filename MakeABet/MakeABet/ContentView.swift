@@ -7,65 +7,74 @@
 
 import SwiftUI
 
+// Navigate between screens
 struct ContentView: View {
-    @State var connect : LastAPI = LastAPI()
-    @State var artists : [Artist] = []
-    @State var isLoading : Bool = true
-    
-    // TODO: Format artist to show rank, up or down arrow, and photo
     var body: some View {
-        VStack {
-            
-            if isLoading {
-                ProgressView("Loading top artists...")
-            }
-            else {
-                // Heading
-                Text("Weekly Top 50")
-                    .font(.largeTitle)
-                
-                // Print current top artists
-                List(artists, id: \.mbid) { artist in
-                    Text("\(artist.name)")
-                        .font(.headline)
+        TabView() {
+            // Home View
+            HomeView()
+                .tabItem() {
+                    Label("Home", systemImage: "house")
                 }
-            }
-            
-            /*
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")*/
-        }
-        .padding()
-        .onAppear() {
-            
-                // create isLoading variable for each artist
-            connect.fetchTopArtists(limit: 50) { result in
-                switch result {
-                    
-                case .success(let fetchedArtists):
-                    print("SUCCESS!")
-                    self.isLoading = false
-                    for artist in fetchedArtists {
-                        print("\(artist.name)")
-                    }
-                    
-                    self.artists = fetchedArtists
-                    
-                case .failure(let error):
-                    self.isLoading = false
-                    print("ERROR: \(error)")
-                    
+            // Charts View
+            ChartsView()
+                .tabItem() {
+                    Label("Charts", systemImage: "chart.line.text.clipboard")
                 }
             
-                
-            }
+            // Search View
+            SearchView()
+                .tabItem() {
+                    Label("Search", systemImage: "magnifyingglass")
+                }
+            
+            // Leaderboard View
+            LeaderboardView()
+                .tabItem() {
+                    Label("Leaderboard", systemImage: "chart.bar")
+                }
+            
+            // Profile View
+            ProfileView()
+                .tabItem() {
+                    Label("Profile", systemImage: "person")
+                }
             
         }
+
     }
 }
 
 #Preview {
-    ContentView(connect: LastAPI())
+    ContentView()
+}
+
+struct HomeView : View {
+    var body : some View {
+        VStack {
+            Text("This is home \n(see lineups here or on its own page ?)")
+        }
+    }
+}
+struct SearchView : View {
+    var body : some View {
+        VStack {
+            Text("This is search")
+        }
+    }
+}
+struct LeaderboardView : View {
+    var body : some View {
+        VStack {
+            Text("This is the leaderboard")
+        }
+    }
+}
+
+struct ProfileView : View {
+    var body : some View {
+        VStack {
+            Text("This is the profile")
+        }
+    }
 }
