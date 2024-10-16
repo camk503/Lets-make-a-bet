@@ -7,18 +7,74 @@
 
 import SwiftUI
 
+// Navigate between screens
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        TabView() {
+            // Home View
+            HomeView()
+                .tabItem() {
+                    Label("Home", systemImage: "house")
+                }
+            // Charts View
+            ChartsView()
+                .tabItem() {
+                    Label("Charts", systemImage: "chart.line.text.clipboard")
+                }
+            
+            // Search View
+            SearchView()
+                .tabItem() {
+                    Label("Search", systemImage: "magnifyingglass")
+                }
+            
+            // Leaderboard View
+            LeaderboardView()
+                .tabItem() {
+                    Label("Leaderboard", systemImage: "chart.bar")
+                }
+            
+            // Profile View
+            ProfileView()
+                .tabItem() {
+                    Label("Profile", systemImage: "person")
+                }
+            
         }
-        .padding()
+
     }
 }
 
 #Preview {
     ContentView()
+}
+
+struct HomeView : View {
+    var body : some View {
+        VStack {
+            Text("This is home \n(see lineups here or on its own page ?)")
+        }
+    }
+}
+struct SearchView : View {
+    var body : some View {
+        VStack {
+            Text("This is search")
+        }
+    }
+}
+struct LeaderboardView : View {
+    var body : some View {
+        VStack {
+            Text("This is the leaderboard")
+        }
+    }
+}
+
+struct ProfileView : View {
+    var body : some View {
+        VStack {
+            Text("This is the profile")
+        }
+    }
 }
