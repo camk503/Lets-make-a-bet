@@ -47,8 +47,9 @@ struct Image : Decodable {
     }
 }
 struct ArtistInfoResponse : Decodable {
-    let artistInfo : ArtistInfo
+    let artist : ArtistInfo
 }
+
 struct ArtistInfo : Decodable {
     let name : String
     let mbid : String
@@ -68,12 +69,12 @@ struct Tags : Decodable {
 }
 struct Tag : Decodable {
     let name : String
+    let url : String
 }
 
 struct Bio : Decodable {
     let summary : String
     let content : String
-    
 }
 
 struct LastAPI {
@@ -133,8 +134,6 @@ struct LastAPI {
 
     }
     
-    // TODO: Can  retur ArtistInfo instead of ArtistInfoResponse by doing artistInfo.artistInfo
-    
     func fetchArtist(artist: String, completion: @escaping (Result<ArtistInfoResponse, Error>) -> Void) {
         var urlBuilder = URLComponents(string: baseURL)
         
@@ -179,5 +178,17 @@ struct LastAPI {
         task.resume()
         
     }
+    /*
+    func formatNumber(number: String) {
+        // var formattedNumber : String = ""
+        
+        if number.count > 3 {
+ 
+        }
+        else {
+
+        }
+        
+    }*/
 }
 

@@ -24,22 +24,22 @@ struct ArtistInfoView : View {
                 
                 HStack {
                     Text("#\(position)")
-                    Text("\(artist.artistInfo.name.capitalized)")
+                    Text("\(artist.artist.name.capitalized)")
                         .font(.title)
                 }
                 VStack(alignment: .leading) {
                     Text("PLAYCOUNT")
                         .font(.system(size: 16))
-                    Text("\(artist.artistInfo.stats.playcount)")
+                    Text("\(artist.artist.stats.playcount)")
                         .font(.subheadline)
                 }
                 VStack(alignment: .leading) {
                     Text("LISTENERS")
                         .font(.system(size: 16))
-                    Text("\(artist.artistInfo.stats.listeners)")
+                    Text("\(artist.artist.stats.listeners)")
                         .font(.subheadline)
                 }
-                Text("Biography\n\(artist.artistInfo.bio.summary)")
+                Text("Biography\n\(artist.artist.bio.summary)")
             }
             
         }
