@@ -56,13 +56,6 @@ struct HomeView : View {
         }
     }
 }
-struct SearchView : View {
-    var body : some View {
-        VStack {
-            Text("This is search")
-        }
-    }
-}
 struct LeaderboardView : View {
     var body : some View {
         VStack {

@@ -52,7 +52,7 @@ struct ArtistInfoResponse : Decodable {
 
 struct ArtistInfo : Decodable {
     let name : String
-    let mbid : String
+    // let mbid : String
     let url : String
     let image : [Image]
     let stats : Stats
