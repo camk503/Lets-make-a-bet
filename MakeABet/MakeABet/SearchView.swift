@@ -10,28 +10,71 @@
 import SwiftUI
 
 struct SearchView : View {
+    // TODO: IS IT BAD THAT IM ESTABLISHING NEW CONNECTION TO API LIKE 16 TIMES LOL
     /*
      0 = Artists
      1 = Songs
      2 = Profiles
      */
+    // Int instead of bool in case we want to add more pages
     @State var page : Int = 0
+    @State var searchText : String = ""
+    @State var connect : LastAPI = LastAPI()
+    @State var isLoading : Bool = true
+    @State var artistList : [Artist] = []
     
     var body: some View {
         VStack {
             HStack {
                 Button("Search Artists") {
                     page = 0
-                }
-                Button("Search Songs") {
-                    page = 1
-                }
+                }.buttonStyle(.borderedProminent)
                 Button("Search Profiles") {
-                    page = 2
+                    page = 1
+                }.buttonStyle(.borderedProminent)
+            }
+            VStack {
+                if page == 0 {
+                    // Print current top artists
+                    List(artistList.indices, id: \.self) { index in
+                        
+                        let artist = artistList[index]
+                        
+                        ArtistSearchView(artist: artist)
+                    }
                 }
+                else if page == 1 {
+                    Text("Put profiles here for search")
+                }
+                
             }
             
         }
+        .onAppear() {
+            connect.fetchTopArtists(limit: 50) { result in
+                switch result {
+                    
+                case .success(let fetchedArtists):
+                    print("SUCCESS!")
+                    self.isLoading = false
+                    for artist in fetchedArtists {
+                        print("\(artist.name)")
+                    }
+                    
+                    self.artistList = fetchedArtists
+                    
+                case .failure(let error):
+                    self.isLoading = false
+                    print("ERROR fetch failure: \(error)")
+                    
+                }
+                
+                
+            }
+        }
     }
     
+}
+#Preview {
+    SearchView()
 }

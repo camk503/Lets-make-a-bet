@@ -42,6 +42,11 @@ struct ArtistInfoView : View {
                 Text("Biography\n\(artist.artist.bio.summary)")
             }
             
+            Button("+ Add to lineup") {
+                print("Implement add to lineup here")
+            }
+            .buttonStyle(.borderedProminent)
+            
         }
         .padding()
         .onAppear() {

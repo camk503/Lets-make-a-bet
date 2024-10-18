@@ -66,9 +66,9 @@ struct ArtistView : View {
                 
                 
             }.padding()
-                .background(Color.clear)
+
         }
-        .buttonStyle(PlainButtonStyle())
+        .buttonStyle(.borderedProminent)
     }
     
     
