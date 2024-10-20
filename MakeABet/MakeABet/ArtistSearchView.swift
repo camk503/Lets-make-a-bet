@@ -6,7 +6,6 @@
 //
 
 // How artists appear on the search page
-// Sorry about all these artist views ... awk
 
 import SwiftUI
 

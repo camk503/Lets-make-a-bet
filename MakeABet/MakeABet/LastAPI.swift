@@ -9,12 +9,12 @@
 //               https://developer.apple.com/documentation/foundation/urlcomponents/1779966-queryitems // Build URL
 //               https://developer.apple.com/documentation/foundation/urlsession // Make API request
 //               https://developer.apple.com/documentation/foundation/urlsession/1407613-datatask // Gets contents of URL
-//  Parse JSON: https://matteomanferdini.com/swift-parse-json/#decodable
+//  Parse JSON:  https://matteomanferdini.com/swift-parse-json/#decodable
 
 import Foundation
 
 /* STRUCTS FOR PARSING JSON */
-// TODO: Ugly AF Move somewhere else
+// TODO: Move somewhere else?
 struct TopArtists : Decodable  {
     //let artists : [Artist]
     let artists : ArtistList
@@ -105,7 +105,7 @@ struct LastAPI {
         let session = URLSession.shared // .shared just gives default configs for basic requests
         let url = urlBuilder?.url
         
-        // Create a task? (see docs I dont really understand this)
+        // Create a task
         let task = session.dataTask(with: url!) { data, response, error in
             
             if let error = error {

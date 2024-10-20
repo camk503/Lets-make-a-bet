@@ -68,7 +68,7 @@ struct SearchView : View {
             
         }
         .onAppear() {
-            connect.fetchTopArtists(limit: 1000) { result in
+            connect.fetchTopArtists(limit: 100) { result in
                 switch result {
                     
                 case .success(let fetchedArtists):
