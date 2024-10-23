@@ -1,7 +1,11 @@
 # Lets-make-a-bet
 
 Screens:
--   HomeScreen
+-   Home
+-   Charts
+-   Search
+-   Leaderboards (or lineups?)
+-   Profile
 
 Views (Functions):
 - 
