@@ -10,7 +10,6 @@
 import SwiftUI
 
 struct SearchView : View {
-    // TODO: IS IT BAD THAT IM ESTABLISHING NEW CONNECTION TO API LIKE 16 TIMES LOL
     /*
      0 = Artists
      1 = Songs
