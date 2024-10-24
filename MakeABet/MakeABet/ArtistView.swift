@@ -4,8 +4,8 @@
 //
 //  Created by Hannah Sheridan on 10/13/24.
 //
-// HELPFUL DOCS:
-//  Images from URLs: https://wwdcbysundell.com/2021/using-swiftui-async-image/
+//  HELPFUL DOCS:
+//      Images from URLs: https://wwdcbysundell.com/2021/using-swiftui-async-image/
 
 import SwiftUI
 
@@ -48,8 +48,8 @@ struct ArtistView : View {
                         VStack(alignment: .leading) {
                             Text("LISTENERS")
                                 .font(.system(size: 8))
-                            Text("\(artist.listeners)")
-                                .font(.subheadline)
+                            Text(LastAPI.formatNumber(number: artist.listeners))
+                                .font(.system(size: 11))
                         }
                         
                         Spacer()
@@ -57,8 +57,8 @@ struct ArtistView : View {
                         VStack(alignment: .leading) {
                             Text("PLAYCOUNT")
                                 .font(.system(size: 8))
-                            Text("\(artist.playcount)")
-                                .font(.subheadline)
+                            Text(LastAPI.formatNumber(number: artist.playcount))
+                                .font(.system(size: 11))
                         }
                     }
                     

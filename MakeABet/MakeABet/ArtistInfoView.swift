@@ -30,13 +30,13 @@ struct ArtistInfoView : View {
                 VStack(alignment: .leading) {
                     Text("PLAYCOUNT")
                         .font(.system(size: 16))
-                    Text("\(artist.artist.stats.playcount)")
+                    Text(LastAPI.formatNumber(number: artist.artist.stats.playcount))
                         .font(.subheadline)
                 }
                 VStack(alignment: .leading) {
                     Text("LISTENERS")
                         .font(.system(size: 16))
-                    Text("\(artist.artist.stats.listeners)")
+                    Text(LastAPI.formatNumber(number: artist.artist.stats.listeners))
                         .font(.subheadline)
                 }
                 Text("Biography\n\(artist.artist.bio.summary)")

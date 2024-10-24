@@ -39,8 +39,8 @@ struct ArtistSearchView: View {
                 VStack(alignment: .leading) {
                     Text("LISTENERS")
                         .font(.system(size: 8))
-                    Text("\(artist.listeners)")
-                        .font(.subheadline)
+                    Text(LastAPI.formatNumber(number:artist.listeners))
+                        .font(.system(size: 11))
                 }
                 
                 Spacer()
@@ -48,8 +48,8 @@ struct ArtistSearchView: View {
                 VStack(alignment: .leading) {
                     Text("PLAYCOUNT")
                         .font(.system(size: 8))
-                    Text("\(artist.playcount)")
-                        .font(.subheadline)
+                    Text(LastAPI.formatNumber(number:artist.playcount))
+                        .font(.system(size: 11))
                 }
             }
             

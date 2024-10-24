@@ -114,17 +114,30 @@ struct LastAPI {
         task.resume()
         
     }
-    /*
-    func formatNumber(number: String) {
-        // var formattedNumber : String = ""
+    
+    static func formatNumber(number: String) -> String {
+        var formattedNumber : String = ""
         
         if number.count > 3 {
- 
-        }
-        else {
+            let reversedNumber : String = String(number.reversed())
 
+            for i in 0..<reversedNumber.count {
+                // Get index >:(
+                let index = reversedNumber.index(reversedNumber.startIndex, offsetBy: i)
+                formattedNumber += String(reversedNumber[index])
+                
+                if (i + 1).isMultiple(of: 3) && i != (reversedNumber.count - 1) {
+                    formattedNumber += ","
+                }
+            }
+
+            formattedNumber = String(formattedNumber.reversed())
+            
+        } else {
+            formattedNumber = number
         }
+        return formattedNumber
         
-    }*/
+    }
 }
 
