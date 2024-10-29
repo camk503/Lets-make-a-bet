@@ -15,16 +15,52 @@ struct ArtistView : View {
     
     // Passed in thru constructor
     let artist : Artist
+    let image : String?
     let position : Int
     
+    @State var defaultImage : String = "https://lastfm.freetls.fastly.net/i/u/34s/2a96cbd8b46e442fc41c2b86b821562f.png"
+    
     var body : some View {
-        NavigationLink(destination: ArtistInfoView(name: artist.name, position: position)) {
+        NavigationLink(destination: ArtistInfoView(name: artist.name, image: image, position: position)) {
             
+            // TODO: Function that returns image based on size and artist
             HStack{
                 // Image of artist
                 //.first? gets first element of array
                 Text("\(position)").font(.largeTitle)
+        
+                if let imageString = image,let imageURL = URL(string: imageString) {
+                    
+                    AsyncImage (
+                        url: imageURL,
+                        content: { img in
+                            img.resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 50, height: 50)
+                        
+                        },
+                        placeholder: {
+                            ProgressView()
+                        }
+                    )
+                                    
+                } else {
+                    let placeholderURL = URL(string: defaultImage)
+                    
+                    AsyncImage (
+                        url: placeholderURL,
+                        content: { img in
+                            img.resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 50, height: 50)
+                        },
+                        placeholder: {
+                            ProgressView()
+                        }
+                    )
+                }
                 
+                /*
                 if let smallImage = artist.image.first?.text, let imageURL = URL(string: smallImage) {
                     AsyncImage(
                         url: imageURL,
@@ -38,7 +74,7 @@ struct ArtistView : View {
                         }
                     )
                 }
-                
+                */
                 // Artist Information
                 VStack(alignment: .leading) {
                     Text("\(artist.name.capitalized)")

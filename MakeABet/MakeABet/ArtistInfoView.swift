@@ -11,8 +11,11 @@ struct ArtistInfoView : View {
     @State var isLoading : Bool = true
     @State var artist : ArtistInfoResponse? = nil
     
+   
     let name : String
+    let image : String?
     let position : Int
+    
     
     var body : some View {
         VStack {
@@ -22,24 +25,47 @@ struct ArtistInfoView : View {
             // If not nil
             else if let artist = artist {
                 
+                if let imageString = image,let imageURL = URL(string: imageString) {
+                    
+                    AsyncImage (
+                        url: imageURL,
+                        content: { img in
+                            img.resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 50, height: 50)
+                        
+                        },
+                        placeholder: {
+                            ProgressView()
+                        }
+                    )
+                                    
+                }
+                
                 HStack {
                     Text("#\(position)")
                     Text("\(artist.artist.name.capitalized)")
                         .font(.title)
                 }
-                VStack(alignment: .leading) {
-                    Text("PLAYCOUNT")
-                        .font(.system(size: 16))
-                    Text(LastAPI.formatNumber(number: artist.artist.stats.playcount))
-                        .font(.subheadline)
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("PLAYCOUNT")
+                            .font(.system(size: 16))
+                        Text(LastAPI.formatNumber(number: artist.artist.stats.playcount))
+                            .font(.subheadline)
+                    }
+                    Spacer()
+                    VStack(alignment: .leading) {
+                        Text("LISTENERS")
+                            .font(.system(size: 16))
+                        Text(LastAPI.formatNumber(number: artist.artist.stats.listeners))
+                            .font(.subheadline)
+                    }
                 }
-                VStack(alignment: .leading) {
-                    Text("LISTENERS")
-                        .font(.system(size: 16))
-                    Text(LastAPI.formatNumber(number: artist.artist.stats.listeners))
-                        .font(.subheadline)
-                }
-                Text("Biography\n\(artist.artist.bio.summary)")
+                
+                Text("Biography\n").bold()
+                Text("\(artist.artist.bio.summary)")
+                
             }
             
             Button("+ Add to lineup") {

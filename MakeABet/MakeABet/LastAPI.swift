@@ -17,7 +17,47 @@ struct LastAPI {
     private let APIKey : String = "9e1855dd72c6c6933bae914bd3099bd4"
     private let baseURL : String = "https://ws.audioscrobbler.com/2.0/"
     
-   
+    private let deezerBaseURL : String = "https://api.deezer.com/search/artist"
+    
+    func fetchImage(artist: String, completion: @escaping (Result<[DeezArtistInfo], Error>) -> Void) {
+        var urlBuilder = URLComponents(string: deezerBaseURL)
+        
+        urlBuilder?.queryItems = [
+            URLQueryItem(name: "q", value: artist)
+        ]
+        
+        // API Request
+        let session = URLSession.shared
+        let url = urlBuilder?.url
+        
+        // Create task
+        let task = session.dataTask(with: url!) { data, response, error in
+            
+            if let error = error {
+                print("Error fetching data: \(error)")
+                completion(.failure(error))
+                return
+            }
+            
+            if let data = data {
+                // Attempt to parse JSON data
+                // "completion" stores API result
+                do {
+                    let artistList = try JSONDecoder().decode(DeezArtists.self, from: data)
+                    
+                    completion(.success(artistList.data))
+
+                } catch {
+                    completion(.failure(error))
+                    print("Error decoding JSON: \(error)")
+                }
+
+            }
+        
+        }
+        task.resume()
+    }
+    
     /**
         This function gets the current top artists for the week from Last.fm's API
      */
@@ -35,6 +75,7 @@ struct LastAPI {
             URLQueryItem(name: "api_key", value: APIKey),
             URLQueryItem(name: "format", value: "json"),
             URLQueryItem(name: "limit", value: String(limit))
+            //URLQueryItem(name: "page", value: "1")
         ]
         
         // API request
@@ -78,7 +119,7 @@ struct LastAPI {
             URLQueryItem(name: "method", value: "artist.getInfo"),
             URLQueryItem(name: "artist", value: artist),
             URLQueryItem(name: "api_key", value: APIKey),
-            URLQueryItem(name: "format", value: "json"),
+            URLQueryItem(name: "format", value: "json")
             
         ]
         
@@ -137,6 +178,11 @@ struct LastAPI {
             formattedNumber = number
         }
         return formattedNumber
+        
+    }
+    
+    static func getLink(string: String) -> String {
+        
         
     }
 }
