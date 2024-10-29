@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyAo25KKikq6-T7k4AMU0l8ap3gOTQIndrM</string>
+	<key>GCM_SENDER_ID</key>
+	<string>270994229381</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>MobileApp.MakeABet</string>
+	<key>PROJECT_ID</key>
+	<string>makeabet-3a598</string>
+	<key>STORAGE_BUCKET</key>
+	<string>makeabet-3a598.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:270994229381:ios:76fefe23c80b22b9a441ec</string>
+</dict>
+</plist>
