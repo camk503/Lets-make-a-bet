@@ -63,11 +63,3 @@ struct LeaderboardView : View {
         }
     }
 }
-
-struct ProfileView : View {
-    var body : some View {
-        VStack {
-            Text("This is the profile")
-        }
-    }
-}

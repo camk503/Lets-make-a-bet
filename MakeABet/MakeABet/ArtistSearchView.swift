@@ -5,23 +5,43 @@
 //  Created by Hannah Sheridan on 10/17/24.
 //
 
-// How artists appear on the search page
-
 import SwiftUI
 
+/**
+ How an artist appears on the SEARCH page
+ Takes in an Artist object from SearchView
+ */
 struct ArtistSearchView: View {
     var artist : Artist
+    var image : String?
+    
+    private let DEFAULT : String = "https://lastfm.freetls.fastly.net/i/u/34s/2a96cbd8b46e442fc41c2b86b821562f.png"
+    
     var body: some View {
         VStack {
-            // Image of artist
-            //.first? gets first element of array
-            // Text("\(position)").font(.largeTitle)
-            
-            if let smallImage = artist.image.first?.text, let imageURL = URL(string: smallImage) {
-                AsyncImage(
+          
+            if let imageString = image, let imageURL = URL(string: imageString) {
+                
+                AsyncImage (
                     url: imageURL,
-                    content: { image in
-                        image.resizable()
+                    content: { img in
+                        img.resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 50, height: 50)
+                    
+                    },
+                    placeholder: {
+                        ProgressView()
+                    }
+                )
+                                
+            } else {
+                let placeholderURL = URL(string: DEFAULT)
+                
+                AsyncImage (
+                    url: placeholderURL,
+                    content: { img in
+                        img.resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 50, height: 50)
                     },
@@ -65,3 +85,6 @@ struct ArtistSearchView: View {
 }
 
 
+#Preview {
+    ArtistSearchView(artist: Artist(name: "Radiohead", playcount: "1", listeners: "1", mbid: "XXX", url: "radiohead.com", image: [Image(text: "https://e-cdns-images.dzcdn.net/images/artist/9508c1217e880b52703a525d1bd5250c/250x250-000000-80-0-0.jpg", size: "small")]))
+}

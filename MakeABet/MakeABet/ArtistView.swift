@@ -9,7 +9,7 @@
 
 import SwiftUI
 
-/* How an artist appears on the charts
+/* How an artist appears on the CHARTS
 Shows image, name, rank, playcount, and listeners */
 struct ArtistView : View {
     
@@ -18,7 +18,7 @@ struct ArtistView : View {
     let image : String?
     let position : Int
     
-    @State var defaultImage : String = "https://lastfm.freetls.fastly.net/i/u/34s/2a96cbd8b46e442fc41c2b86b821562f.png"
+    private let DEFAULT : String = "https://lastfm.freetls.fastly.net/i/u/34s/2a96cbd8b46e442fc41c2b86b821562f.png"
     
     var body : some View {
         NavigationLink(destination: ArtistInfoView(name: artist.name, image: image, position: position)) {
@@ -29,7 +29,7 @@ struct ArtistView : View {
                 //.first? gets first element of array
                 Text("\(position)").font(.largeTitle)
         
-                if let imageString = image,let imageURL = URL(string: imageString) {
+                if let imageString = image, let imageURL = URL(string: imageString) {
                     
                     AsyncImage (
                         url: imageURL,
@@ -45,7 +45,7 @@ struct ArtistView : View {
                     )
                                     
                 } else {
-                    let placeholderURL = URL(string: defaultImage)
+                    let placeholderURL = URL(string: DEFAULT)
                     
                     AsyncImage (
                         url: placeholderURL,
@@ -60,21 +60,6 @@ struct ArtistView : View {
                     )
                 }
                 
-                /*
-                if let smallImage = artist.image.first?.text, let imageURL = URL(string: smallImage) {
-                    AsyncImage(
-                        url: imageURL,
-                        content: { image in
-                            image.resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 50, height: 50)
-                        },
-                        placeholder: {
-                            ProgressView()
-                        }
-                    )
-                }
-                */
                 // Artist Information
                 VStack(alignment: .leading) {
                     Text("\(artist.name.capitalized)")

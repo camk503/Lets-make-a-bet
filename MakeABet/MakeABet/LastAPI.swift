@@ -12,51 +12,14 @@
 //  Parse JSON:  https://matteomanferdini.com/swift-parse-json/#decodable
 
 import Foundation
+import SwiftUI
 
 struct LastAPI {
     private let APIKey : String = "9e1855dd72c6c6933bae914bd3099bd4"
     private let baseURL : String = "https://ws.audioscrobbler.com/2.0/"
     
-    private let deezerBaseURL : String = "https://api.deezer.com/search/artist"
-    
-    func fetchImage(artist: String, completion: @escaping (Result<[DeezArtistInfo], Error>) -> Void) {
-        var urlBuilder = URLComponents(string: deezerBaseURL)
-        
-        urlBuilder?.queryItems = [
-            URLQueryItem(name: "q", value: artist)
-        ]
-        
-        // API Request
-        let session = URLSession.shared
-        let url = urlBuilder?.url
-        
-        // Create task
-        let task = session.dataTask(with: url!) { data, response, error in
-            
-            if let error = error {
-                print("Error fetching data: \(error)")
-                completion(.failure(error))
-                return
-            }
-            
-            if let data = data {
-                // Attempt to parse JSON data
-                // "completion" stores API result
-                do {
-                    let artistList = try JSONDecoder().decode(DeezArtists.self, from: data)
-                    
-                    completion(.success(artistList.data))
+    // @Published var isLoading : Bool = true
 
-                } catch {
-                    completion(.failure(error))
-                    print("Error decoding JSON: \(error)")
-                }
-
-            }
-        
-        }
-        task.resume()
-    }
     
     /**
         This function gets the current top artists for the week from Last.fm's API
@@ -111,7 +74,7 @@ struct LastAPI {
 
     }
     
-    func fetchArtist(artist: String, completion: @escaping (Result<ArtistInfoResponse, Error>) -> Void) {
+    func fetchArtist(artist: String, completion: @escaping (Result<ArtistInfo, Error>) -> Void) {
         var urlBuilder = URLComponents(string: baseURL)
         
         // Define array of query items (key-val pairs)
@@ -141,7 +104,7 @@ struct LastAPI {
                 do {
                     let artistInfo = try JSONDecoder().decode(ArtistInfoResponse.self, from: data)
                     
-                    completion(.success(artistInfo))
+                    completion(.success(artistInfo.artist))
 
                 } catch {
                     completion(.failure(error))
@@ -155,6 +118,51 @@ struct LastAPI {
         task.resume()
         
     }
+    
+    /* DEEZER IMAGES */
+    func fetchImage(artist: String, completion: @escaping (Result<[DeezArtistInfo], Error>) -> Void) {
+        let deezerBaseURL : String = "https://api.deezer.com/search/artist"
+        var urlBuilder = URLComponents(string: deezerBaseURL)
+        //var size = "medIum"
+        //var imageSize = size.lowercased()
+        // size: String, param
+        
+        urlBuilder?.queryItems = [
+            URLQueryItem(name: "q", value: artist)
+        ]
+        
+        // API Request
+        let session = URLSession.shared
+        let url = urlBuilder?.url
+        
+        // Create task
+        let task = session.dataTask(with: url!) { data, response, error in
+            
+            if let error = error {
+                print("Error fetching data: \(error)")
+                completion(.failure(error))
+                return
+            }
+            
+            if let data = data {
+                // Attempt to parse JSON data
+                // "completion" stores API result
+                do {
+                    let artistList = try JSONDecoder().decode(DeezArtists.self, from: data)
+                    
+                    completion(.success(artistList.data))
+
+                } catch {
+                    completion(.failure(error))
+                    print("Error decoding JSON: \(error)")
+                }
+
+            }
+        
+        }
+        task.resume()
+    }
+    
     
     static func formatNumber(number: String) -> String {
         var formattedNumber : String = ""
@@ -180,10 +188,61 @@ struct LastAPI {
         return formattedNumber
         
     }
+    /*
+    func fetchAllData(limit: Int) -> ([Artist], [String:String]) {
+        var artists : [Artist] = []
+        var images : [String:String] = [:]
+        
+        //if (isLoading) {
+            fetchTopArtists(limit: limit) { result in
+                switch result {
+                    
+                case .success(let fetchedArtists):
+                    print("SUCCESS!")
+                    //self.isLoading = false
+                    for artist in fetchedArtists {
+                        
+                        // Try to get image for artist from Deezer API
+                        fetchImage(artist: artist.name) { result in
+                            switch result {
+                                
+                            case .success(let fetchedImages):
+                                print("SUCCESS - images")
+                                //isLoading = false
+                                
+                                print(artist.name)
+                                // print((fetchedImages.first?.picture)!)
+                                
+                                // TODO: Better unwrapping
+                                images.updateValue((fetchedImages.first?.picture_big)!, forKey: artist.name)
+                                
+                                
+                            case .failure (let error):
+                                // self.isLoading = false
+                                print("ERROR getting image for \(artist.name): \(error)")
+                            }
+                            
+                        }
+                        
+                    }
+                    
+                    artists = fetchedArtists
+                    
+                case .failure(let error):
+                    // self.isLoading = false
+                    print("ERROR fetch failure: \(error)")
+                    
+                }
+                
+                
+            //}
+        }
+        
+        return (artists, images)
+        
+    }*/
     
-    static func getLink(string: String) -> String {
-        
-        
-    }
+  
+
 }
 

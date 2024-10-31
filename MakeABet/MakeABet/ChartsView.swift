@@ -13,8 +13,6 @@ struct ChartsView: View {
     @State var artists : [Artist] = []
     @State var images : [String:String] = [:]
     
-    // Try dictionary for artist and image
-    //@State var artistAndImage : [String:Artist] = [:]
     //TODO: If isLoading for too long, give error message
     @State var isLoading : Bool = true
     let LIMIT = 50
@@ -47,6 +45,15 @@ struct ChartsView: View {
             }
             .padding()
             .onAppear() {
+                
+                /*if (isLoading) {
+                    var data = connect.fetchAllData(limit: LIMIT)
+                    
+                    self.artists = data.0
+                    self.images = data.1
+                }*/
+                
+                /* I dont like this duplicate code (in SearchView too) but idk how else to do it */
                 if (isLoading) {
                     connect.fetchTopArtists(limit: LIMIT) { result in
                         switch result {
@@ -65,10 +72,10 @@ struct ChartsView: View {
                                         self.isLoading = false
                                         
                                         print(artist.name)
-                                        print((fetchedImages.first?.picture)!)
+                                        // print((fetchedImages.first?.picture)!)
                                         
                                         // TODO: Better unwrapping
-                                        self.images.updateValue((fetchedImages.first?.picture)!, forKey: artist.name)
+                                        self.images.updateValue((fetchedImages.first?.picture_big)!, forKey: artist.name)
                                         
                                         
                                     case .failure (let error):
