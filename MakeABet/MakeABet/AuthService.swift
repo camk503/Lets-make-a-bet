@@ -11,10 +11,11 @@ import FirebaseAuth
 
 class AuthService: ObservableObject {
     
-    @Published var signedIn:Bool = false
+    @Published var signedIn: Bool = false
+    private var stateHandle: AuthStateDidChangeListenerHandle?
     
     init() {
-        Auth.auth().addStateDidChangeListener() { auth, user in
+        stateHandle = Auth.auth().addStateDidChangeListener() { auth, user in
             if user != nil {
                 self.signedIn = true
                 print("Auth state changed, is signed in")
@@ -27,21 +28,14 @@ class AuthService: ObservableObject {
     
     // MARK: - Password Account
     func regularCreateAccount(email: String, password: String) async throws {
-        do {
             Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
                 if let e = error {
-                    print(e.localizedDescription)
-                    
+                    print("Error catch create account \(e.localizedDescription)")
                 } else {
                     print("Successfully created password account")
                 }
             }
         }
-        catch {
-            print("Error catch create account")
-            throw DBError.registrationFailed(errorMessage: error.localizedDescription)
-        }
-    }
     
     //MARK: - Traditional sign in
     // Traditional sign in with password and email
