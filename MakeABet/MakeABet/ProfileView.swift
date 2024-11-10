@@ -20,7 +20,7 @@ struct ProfileView : View {
         VStack {
             Text("This is the profile")
             
-            Text("Display Username: ")
+            Text("Username: ")
             
             Button("Log out") {
                 print("Log out tapped!")
@@ -40,4 +40,5 @@ struct ProfileView : View {
         }
     }
 }
+
 

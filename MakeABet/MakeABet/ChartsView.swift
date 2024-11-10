@@ -9,13 +9,8 @@ import SwiftUI
 
 struct ChartsView: View {
     // TODO: one connect for all views?
-    @State var connect : LastAPI = LastAPI()
-    @State var artists : [Artist] = []
-    @State var images : [String:String] = [:]
-    
+    @EnvironmentObject var connect : LastAPI /*= LastAPI()*/
     //TODO: If isLoading for too long, give error message
-    @State var isLoading : Bool = true
-    let LIMIT = 50
     
     // TODO: Format artist to show up or down arrow and photo
     var body: some View {
@@ -24,82 +19,33 @@ struct ChartsView: View {
         NavigationView {
             VStack {
                 
-                if isLoading {
+                if connect.isLoading {
                     ProgressView("Loading top artists...")
                 }
                 else {
                     // Heading
-                    Text("Top \(LIMIT) Artists")
+                    Text("Top 50 Artists")
                         .font(.title)
                     
                     // Print current top artists
-                    List(artists.indices, id: \.self) { index in
+                    List(connect.topArtists.indices, id: \.self) { index in
                         // Some artists dont have an mbid, use index
-                        let artist = artists[index]
+                        let artist = connect.topArtists[index]
                         
                         // TODO: Better unwrapping
-                        ArtistView(artist: artist, image: images[artist.name], position: index + 1)
+                        ArtistView(artist: artist, image: connect.images[artist.name], position: index + 1)
                     }
                 }
                 
             }
             .padding()
             .onAppear() {
-                
-                /*if (isLoading) {
-                    var data = connect.fetchAllData(limit: LIMIT)
-                    
-                    self.artists = data.0
-                    self.images = data.1
-                }*/
-                
-                /* I dont like this duplicate code (in SearchView too) but idk how else to do it */
-                if (isLoading) {
-                    connect.fetchTopArtists(limit: LIMIT) { result in
-                        switch result {
-                            
-                        case .success(let fetchedArtists):
-                            print("SUCCESS!")
-                            //self.isLoading = false
-                            for artist in fetchedArtists {
-                                
-                                // Try to get image for artist from Deezer API
-                                connect.fetchImage(artist: artist.name) { result in
-                                    switch result {
-                                        
-                                    case .success(let fetchedImages):
-                                        print("SUCCESS - images")
-                                        self.isLoading = false
-                                        
-                                        print(artist.name)
-                                        // print((fetchedImages.first?.picture)!)
-                                        
-                                        // TODO: Better unwrapping
-                                        self.images.updateValue((fetchedImages.first?.picture_big)!, forKey: artist.name)
-                                        
-                                        
-                                    case .failure (let error):
-                                        self.isLoading = false
-                                        print("ERROR getting image for \(artist.name): \(error)")
-                                    }
-                                    
-                                }
-                                
-                            }
-                            
-                            self.artists = fetchedArtists
-                            
-                        case .failure(let error):
-                            self.isLoading = false
-                            print("ERROR fetch failure: \(error)")
-                            
-                        }
-                        
-                        
-                    }
-                }
+                connect.loadData(limit: 50)
             }
         }
     }
 }
 
+#Preview {
+    ChartsView().environmentObject(LastAPI())
+}

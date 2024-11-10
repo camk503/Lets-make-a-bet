@@ -12,6 +12,8 @@ import FirebaseAuth
 class AuthService: ObservableObject {
     
     @Published var signedIn: Bool = false
+    @Published var errorDescription : String = ""
+    
     private var stateHandle: AuthStateDidChangeListenerHandle?
     
     init() {
@@ -30,9 +32,13 @@ class AuthService: ObservableObject {
     func regularCreateAccount(email: String, password: String) async throws {
             Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
                 if let e = error {
+                    self.errorDescription = e.localizedDescription
                     print("Error catch create account \(e.localizedDescription)")
+                    
                 } else {
+                    self.errorDescription = ""
                     print("Successfully created password account")
+                    
                 }
             }
         }

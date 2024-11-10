@@ -46,7 +46,7 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    ContentView().environmentObject(LastAPI())
 }
 
 struct HomeView : View {

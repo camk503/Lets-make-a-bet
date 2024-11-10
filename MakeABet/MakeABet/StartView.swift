@@ -15,7 +15,7 @@ struct StartView: View {
     
     var body: some View {
             if authService.signedIn {
-                ContentView()
+                ContentView().environmentObject(LastAPI())
             } else {
                 WelcomeView()
             }

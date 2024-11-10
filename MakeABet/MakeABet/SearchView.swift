@@ -14,13 +14,10 @@ struct SearchView : View {
     // Int instead of bool in case we want to add more pages
     @State var page : Int = 0
     @State var searchText : String = ""
-    @State var connect : LastAPI = LastAPI()
-    @State var isLoading : Bool = true
-    @State var artists : [Artist] = []
+    @EnvironmentObject var connect : LastAPI /*= LastAPI()*/
+    
     // Search result
     @State var results : [Artist] = []
-    @State var images : [String:String] = [:]
-    
     
     var body: some View {
         NavigationView {
@@ -34,15 +31,26 @@ struct SearchView : View {
                     }.buttonStyle(.borderedProminent)
                 }
                 VStack {
+        
                     if page == 0 {
-                        // Print current top artists
-                        List(results.indices, id: \.self) { index in
+                        if (connect.isLoading) {
+                            ProgressView("Loading all artists...")
+                        } else {
+                            // Print current top artists
+                            List(results.indices, id: \.self) { index in
+                                
+                                let artist = results[index]
+                                
+                                
+                                // Get position in all artists array
+                                if let allArtistsIndex = connect.allArtists.firstIndex(where: { $0.name == artist.name }) {
+                                    // Pass the position in the allArtists array to ArtistSearchView
+                                    ArtistSearchView(artist: artist, image: connect.images[artist.name], position: allArtistsIndex + 1)
+                                }
+                                //ArtistSearchView(artist: artist, image: connect.images[artist.name], position: index + 1)
+                            }
                             
-                            let artist = results[index]
-                            
-                            ArtistSearchView(artist: artist, image: images[artist.name])
                         }
-                        
                     }
                     else if page == 1 {
                         Text("Put profiles here for search")
@@ -55,72 +63,32 @@ struct SearchView : View {
         .searchable(text: $searchText)
         .onChange(of: searchText) { searchText in
             if !searchText.isEmpty {
-                    // Should be able to search ALL artists
-                results = artists.filter { $0.name.lowercased().contains(searchText.lowercased())}
+                // Should be able to search ALL artists
+                results = connect.allArtists.filter { $0.name.lowercased().contains(searchText.lowercased())}
             }
             else {
-                results = artists
+                results = connect.topArtists
             }
             
         }
-        .onAppear() {
-           /* if (isLoading) {
-                var data = connect.fetchAllData(limit: 999)
-                
-                self.artists = data.0
-                self.results = data.0
-                self.images = data.1
-            }*/
-            
-            if (isLoading) {
-                connect.fetchTopArtists(limit: 999) { result in
-                    switch result {
-                        
-                    case .success(let fetchedArtists):
-                        print("SUCCESS!")
-                        self.isLoading = false
-                        for artist in fetchedArtists {
-                            print("\(artist.name)")
-                            
-                            // Try to get image for artist from Deezer API
-                            connect.fetchImage(artist: artist.name) { result in
-                                switch result {
-                                    
-                                case .success(let fetchedImages):
-                                    print("SUCCESS - images")
-                                    self.isLoading = false
-                                    
-                                    print(artist.name)
-                                
-                                    // TODO: Better unwrapping
-                                    self.images.updateValue((fetchedImages.first?.picture_big)!, forKey: artist.name)
-                                    
-                                    
-                                case .failure (let error):
-                                    self.isLoading = false
-                                    print("ERROR getting image for \(artist.name): \(error)")
-                                }
-                                
-                            }
-
-                        }
-         
-                        self.artists = fetchedArtists
-                        self.results = fetchedArtists
-                        
-                    case .failure(let error):
-                        self.isLoading = false
-                        print("ERROR fetch failure: \(error)")
-                        
-                    }
-                    
-                    
+        .onReceive(connect.$topArtists) { newArtists in
+            if searchText.isEmpty {
+                results = newArtists
+            }
+        }
+        .onReceive(connect.$allArtists) { newArtists in
+            if !searchText.isEmpty {
+                results = newArtists.filter {
+                    $0.name.lowercased().contains(searchText.lowercased())
                 }
             }
+        }
+        .onAppear() {
+            connect.loadData(limit: 999)
         }
     }
     
 }
 #Preview {
-    SearchView()
+    SearchView().environmentObject(LastAPI())
 }

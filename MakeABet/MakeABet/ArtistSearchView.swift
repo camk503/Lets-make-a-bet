@@ -14,12 +14,13 @@ import SwiftUI
 struct ArtistSearchView: View {
     var artist : Artist
     var image : String?
+    var position : Int
     
     private let DEFAULT : String = "https://lastfm.freetls.fastly.net/i/u/34s/2a96cbd8b46e442fc41c2b86b821562f.png"
     
     var body: some View {
         VStack {
-          
+          /*
             if let imageString = image, let imageURL = URL(string: imageString) {
                 
                 AsyncImage (
@@ -49,20 +50,22 @@ struct ArtistSearchView: View {
                         ProgressView()
                     }
                 )
-            }
+            }*/
+            Text("#\(position)")
+                .font(.largeTitle)
             
             // Artist Information
             Text("\(artist.name.capitalized)")
                 .font(.headline)
             
             HStack {
+                // Text("#\(position)")
                 VStack(alignment: .leading) {
                     Text("LISTENERS")
                         .font(.system(size: 8))
                     Text(LastAPI.formatNumber(number:artist.listeners))
                         .font(.system(size: 11))
                 }
-                
                 Spacer()
                 
                 VStack(alignment: .leading) {
@@ -86,5 +89,5 @@ struct ArtistSearchView: View {
 
 
 #Preview {
-    ArtistSearchView(artist: Artist(name: "Radiohead", playcount: "1", listeners: "1", mbid: "XXX", url: "radiohead.com", image: [Image(text: "https://e-cdns-images.dzcdn.net/images/artist/9508c1217e880b52703a525d1bd5250c/250x250-000000-80-0-0.jpg", size: "small")]))
+    ArtistSearchView(artist: Artist(name: "Radiohead", playcount: "1", listeners: "1", mbid: "XXX", url: "radiohead.com", image: [Image(text: "https://e-cdns-images.dzcdn.net/images/artist/9508c1217e880b52703a525d1bd5250c/250x250-000000-80-0-0.jpg", size: "small")]), position: 1)
 }
