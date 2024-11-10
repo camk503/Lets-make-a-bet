@@ -234,38 +234,53 @@ class LastAPI : ObservableObject {
                         
                     case .success(let fetchedArtists):
                         print("SUCCESS!")
+                        self.isLoading = false
                  
-                        for artist in fetchedArtists {
-                            
-                            // Try to get image for artist from Deezer API
-                            self.fetchImage(artist: artist.name) { result in
-                                switch result {
+                        /*
+                        if (limit == 50) {
+                            for artist in fetchedArtists {
+                                
+                                // Try to get image for artist from Deezer API
+                                self.fetchImage(artist: artist.name) { result in
+                                    switch result {
+                                        
+                                    case .success(let fetchedImages):
+                                        print("SUCCESS - images")
+                                        self.isLoading = false
+                                        
+                                        print(artist.name)
+                                        
+                                        // TODO: Better unwrapping
+                                        self.images.updateValue((fetchedImages.first?.picture_big)!, forKey: artist.name)
+                                        
+                                        
+                                    case .failure (let error):
+                                        self.isLoading = false
+                                        print("ERROR getting image for \(artist.name): \(error)")
+                                    }
                                     
-                                case .success(let fetchedImages):
-                                    print("SUCCESS - images")
-                                    self.isLoading = false
-                                    
-                                    print(artist.name)
-                                    
-                                    // TODO: Better unwrapping
-                                    self.images.updateValue((fetchedImages.first?.picture_big)!, forKey: artist.name)
-                                    
-                                    
-                                case .failure (let error):
-                                    self.isLoading = false
-                                    print("ERROR getting image for \(artist.name): \(error)")
                                 }
                                 
                             }
-                                
-                        }
+                            
+                            self.topArtists = fetchedArtists
+                        } else {
+                            self.isLoading = false
+                            self.allArtists = fetchedArtists
+                            if (self.topArtists.isEmpty) {
+                                self.topArtists = Array(fetchedArtists.prefix(50))
+                            }
+                        }*/
                         
-                        if limit < 999 {
+                        self.allArtists = fetchedArtists
+                        self.topArtists = Array(fetchedArtists.prefix(50))
+                        
+                        /*if limit < 999 {
                             self.topArtists = fetchedArtists
                         } else {
                             self.allArtists = fetchedArtists
                             self.topArtists = Array(fetchedArtists.prefix(50))
-                        }
+                        }*/
                     case .failure(let error):
                         self.isLoading = false
                         print("ERROR fetch failure: \(error)")

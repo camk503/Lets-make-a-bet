@@ -46,6 +46,18 @@ struct SearchView : View {
                                 if let allArtistsIndex = connect.allArtists.firstIndex(where: { $0.name == artist.name }) {
                                     // Pass the position in the allArtists array to ArtistSearchView
                                     ArtistSearchView(artist: artist, image: connect.images[artist.name], position: allArtistsIndex + 1)
+                                        .onAppear() {
+                                            if connect.images[artist.name] == nil {
+                                                connect.fetchImage(artist: artist.name) { result in
+                                                    switch result {
+                                                    case .success(let images):
+                                                        connect.images[artist.name] = images.first?.picture_big
+                                                    case .failure(let error):
+                                                        print("Error loading image for \(artist.name): \(error)")
+                                                    }
+                                                }
+                                            }
+                                        }
                                 }
                                 //ArtistSearchView(artist: artist, image: connect.images[artist.name], position: index + 1)
                             }

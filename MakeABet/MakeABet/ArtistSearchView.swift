@@ -20,7 +20,6 @@ struct ArtistSearchView: View {
     
     var body: some View {
         VStack {
-          /*
             if let imageString = image, let imageURL = URL(string: imageString) {
                 
                 AsyncImage (
@@ -50,7 +49,7 @@ struct ArtistSearchView: View {
                         ProgressView()
                     }
                 )
-            }*/
+            }
             Text("#\(position)")
                 .font(.largeTitle)
             

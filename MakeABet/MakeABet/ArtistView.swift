@@ -23,14 +23,12 @@ struct ArtistView : View {
     var body : some View {
         NavigationLink(destination: ArtistInfoView(name: artist.name, image: image, position: position)) {
             
-            // TODO: Function that returns image based on size and artist
             HStack{
                 // Image of artist
                 //.first? gets first element of array
                 Text("\(position)").font(.largeTitle)
         
                 if let imageString = image, let imageURL = URL(string: imageString) {
-                    
                     AsyncImage (
                         url: imageURL,
                         content: { img in
@@ -55,6 +53,7 @@ struct ArtistView : View {
                                 .frame(width: 50, height: 50)
                         },
                         placeholder: {
+                            //Text("P")
                             ProgressView()
                         }
                     )
@@ -90,7 +89,9 @@ struct ArtistView : View {
 
         }
         .buttonStyle(.borderedProminent)
+        
     }
+    
     
     
 }
