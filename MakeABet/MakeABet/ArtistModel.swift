@@ -8,7 +8,6 @@
 
 /* STRUCTS FOR TOP ARTISTS */
 struct TopArtists : Decodable  {
-    //let artists : [Artist]
     let artists : ArtistList
 }
 

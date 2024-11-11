@@ -8,17 +8,17 @@
 import SwiftUI
 
 struct ChartsView: View {
-    // TODO: one connect for all views?
-    @EnvironmentObject var connect : LastAPI /*= LastAPI()*/
-    //TODO: If isLoading for too long, give error message
+    @EnvironmentObject var connect : LastAPI
+    @EnvironmentObject var manager : FirebaseManager
     
-    // TODO: Format artist to show up or down arrow and photo
+    @State var movement : String = ""
+
+    // TODO: If isLoading for too long, give error message
     var body: some View {
         
         // To allow for navigation between ArtistView and ArtistInfoView
         NavigationView {
             VStack {
-                
                 if connect.isLoading {
                     ProgressView("Loading top artists...")
                 }
@@ -29,13 +29,16 @@ struct ChartsView: View {
                     
                     // Print current top artists
                     List(connect.topArtists.indices, id: \.self) { index in
+
                         // Some artists dont have an mbid, use index
                         let artist = connect.topArtists[index]
                         
-                        // TODO: Better unwrapping
-                        ArtistView(artist: artist, image: connect.images[artist.name], position: index + 1)
+                        // Get movement of artist on chart
+                        let movement = manager.updateMovement(for: artist.name, at: index)
+                        
+                        // Print artist info to page
+                        ArtistView(artist: artist, image: connect.images[artist.name], position: index + 1, movement: movement)
                             .onAppear() {
-                                print("\(index+1)")
                                 if connect.images[artist.name] == nil {
                                     connect.fetchImage(artist: artist.name) { result in
                                         switch result {
@@ -46,6 +49,7 @@ struct ChartsView: View {
                                         }
                                     }
                                 }
+                                
                             }
                     }
                 }
@@ -60,5 +64,7 @@ struct ChartsView: View {
 }
 
 #Preview {
-    ChartsView().environmentObject(LastAPI())
+    ChartsView()
+        .environmentObject(LastAPI())
+        .environmentObject(FirebaseManager())
 }

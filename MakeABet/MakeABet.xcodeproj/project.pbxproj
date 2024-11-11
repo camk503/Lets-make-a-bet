@@ -10,6 +10,7 @@
 		BB0742FA2CD175E600AD98FF /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = BB0742F92CD175E600AD98FF /* FirebaseAuth */; };
 		BB0742FC2CD175EA00AD98FF /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = BB0742FB2CD175EA00AD98FF /* FirebaseAnalytics */; };
 		BB0742FE2CD175ED00AD98FF /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = BB0742FD2CD175ED00AD98FF /* FirebaseCore */; };
+		BB504B222CE2572E00F6E23B /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = BB504B212CE2572E00F6E23B /* FirebaseFirestore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BB0742FC2CD175EA00AD98FF /* FirebaseAnalytics in Frameworks */,
+				BB504B222CE2572E00F6E23B /* FirebaseFirestore in Frameworks */,
 				BB0742FE2CD175ED00AD98FF /* FirebaseCore in Frameworks */,
 				BB0742FA2CD175E600AD98FF /* FirebaseAuth in Frameworks */,
 			);
@@ -120,6 +122,7 @@
 				BB0742F92CD175E600AD98FF /* FirebaseAuth */,
 				BB0742FB2CD175EA00AD98FF /* FirebaseAnalytics */,
 				BB0742FD2CD175ED00AD98FF /* FirebaseCore */,
+				BB504B212CE2572E00F6E23B /* FirebaseFirestore */,
 			);
 			productName = MakeABet;
 			productReference = 45FA54F22CB8278900C5292D /* MakeABet.app */;
@@ -592,6 +595,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BB0742CC2CD16B2B00AD98FF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCore;
+		};
+		BB504B212CE2572E00F6E23B /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BB0742CC2CD16B2B00AD98FF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -12,20 +12,19 @@ import SwiftUI
 /* How an artist appears on the CHARTS
 Shows image, name, rank, playcount, and listeners */
 struct ArtistView : View {
-    
     // Passed in thru constructor
     let artist : Artist
     let image : String?
     let position : Int
-    
+    let movement : String
+
     private let DEFAULT : String = "https://lastfm.freetls.fastly.net/i/u/34s/2a96cbd8b46e442fc41c2b86b821562f.png"
     
     var body : some View {
         NavigationLink(destination: ArtistInfoView(name: artist.name, image: image, position: position)) {
             
-            HStack{
-                // Image of artist
-                //.first? gets first element of array
+            HStack(spacing: 10) {
+            
                 Text("\(position)").font(.largeTitle)
         
                 if let imageString = image, let imageURL = URL(string: imageString) {
@@ -59,8 +58,23 @@ struct ArtistView : View {
                     )
                 }
                 
+                // Show icon for movement
+                // Need to do SwiftUI.Image bc I defined my own
+                // custom struct called Image
+                if movement == "up" {
+                    SwiftUI.Image(systemName: "chevron.up.circle.fill")
+                        .foregroundColor(.green)
+                } else if movement == "down" {
+                    SwiftUI.Image(systemName: "chevron.down.circle.fill")
+                        .foregroundColor(.red)
+                } else {
+                    SwiftUI.Image(systemName: "chevron.right.circle.fill")
+                        .foregroundColor(.gray)
+                }
+            
                 // Artist Information
                 VStack(alignment: .leading) {
+                    
                     Text("\(artist.name.capitalized)")
                         .font(.headline)
                     
@@ -84,14 +98,13 @@ struct ArtistView : View {
                     
                 }
                 
-                
-            }.padding()
-
+            }.frame(maxWidth: .infinity, alignment: .leading) // Full width for content
+                .padding(.vertical, 15)
         }
         .buttonStyle(.borderedProminent)
-        
     }
     
-    
-    
+}
+#Preview {
+    ArtistView(artist: Artist(name: "Radiohead", playcount: "1", listeners: "1", mbid: "XXX", url: "radiohead.com", image: [Image(text:  "https://e-cdns-images.dzcdn.net/images/artist/9508c1217e880b52703a525d1bd5250c/250x250-000000-80-0-0.jpg", size: "small")]), image: "", position: 1, movement: "up")
 }
