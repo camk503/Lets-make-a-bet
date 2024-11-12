@@ -14,18 +14,41 @@ struct LoginView: View {
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        NavigationView {
+        //NavigationView {
             ZStack {
-                Color.gray
+                Color.gray.opacity(0.1)
                     .ignoresSafeArea()
-                    .opacity(0.5)
                 
-                VStack {
+                VStack() {
+                    // Spacer()
+                    Text("Let's Make A Bet")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .foregroundColor(.pink)
+                        .padding(.top, 40)
+                    
+                    // Subtitle and welcome message
+                    Text("Login to Existing Account")
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.gray)
+                        .padding(.bottom, 30)
+                    
                     TextField("Email", text: $email)
-                        .textFieldStyle(.roundedBorder)
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(10)
+                        .shadow(color:.gray.opacity(0.3), radius: 10, x: 0, y: 3)
+                        .textInputAutocapitalization(.never)
+                        .disableAutocorrection(true)
                 
                     SecureField("Password", text: $password)
-                        .textFieldStyle(.roundedBorder)
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(10)
+                        .shadow(color:.gray.opacity(0.3), radius: 10, x: 0, y: 3)
+                        .textInputAutocapitalization(.never)
+                        .disableAutocorrection(true)
                     
                     Button("Login") {
                         authService.regularSignIn(email: email, password: password) { error in
@@ -35,20 +58,28 @@ struct LoginView: View {
                         }
                     }
                     .buttonStyle(.borderedProminent)
+                    .tint(.pink)
                     .controlSize(.large)
+                    .cornerRadius(10)
+                    .padding(.top, 10)
                     
                     HStack {
                         Text("Don't have an account?")
+                            .foregroundColor(.gray)
                         
                         Button {
                             dismiss()
                         } label: {
                             Text("Create Account").foregroundColor(.blue)
                         }
-                    }.frame(maxWidth: .infinity, alignment: .center)
+                    }.padding(.top, 20)
+                    
+                    //Spacer()
                 }
-            }
-        }
+                .padding(.horizontal, 30)
+                
+            }.navigationBarBackButtonHidden(true)
+        //}
     }
 }
 

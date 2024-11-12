@@ -16,6 +16,7 @@ struct ContentView: View {
                 .tabItem() {
                     Label("Home", systemImage: "house")
                 }
+                
             // Charts View
             ChartsView()
                 .tabItem() {
@@ -39,27 +40,13 @@ struct ContentView: View {
                 .tabItem() {
                     Label("Profile", systemImage: "person")
                 }
-            
         }
 
     }
 }
 
 #Preview {
-    ContentView().environmentObject(LastAPI())
-}
-
-struct HomeView : View {
-    var body : some View {
-        VStack {
-            Text("This is home \n(see lineups here or on its own page ?)")
-        }
-    }
-}
-struct LeaderboardView : View {
-    var body : some View {
-        VStack {
-            Text("This is the leaderboard")
-        }
-    }
+    ContentView()
+        .environmentObject(LastAPI())
+        .environmentObject(FirebaseManager())
 }

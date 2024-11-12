@@ -37,32 +37,61 @@ struct WelcomeView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color.gray
+                Color.gray.opacity(0.1)
                     .ignoresSafeArea()
                     .opacity(0.5)
                 
                 VStack {
-                    TextField("Email", text: $email)
-                        .textFieldStyle(.roundedBorder)
-                    SecureField("Password", text: $password)
-                        .textFieldStyle(.roundedBorder)
+                    Text("Let's Make A Bet")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .foregroundColor(.pink)
+                        .padding(.top, 40)
+                    Text("Welcome! Let's get started")
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.gray)
+                        .padding(.bottom, 30)
                     
-                    Button("Create an Account") {
+                    // Email and password fields
+                    TextField("Email", text: $email)
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(10)
+                        .shadow(color:.gray.opacity(0.3), radius: 10, x: 0, y: 3)
+                        .textInputAutocapitalization(.never)
+                        .disableAutocorrection(true)
+                
+                    SecureField("Password", text: $password)
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(10)
+                        .shadow(color:.gray.opacity(0.3), radius: 10, x: 0, y: 3)
+                        .textInputAutocapitalization(.never)
+                        .disableAutocorrection(true)
+                    
+                    Button("Create Account") {
                         createAccount()
                     }
-
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)
+                    .tint(.pink)
+                    .cornerRadius(10)
+                    .padding(.top, 10)
                     
                     HStack {
-                        Text("Already have an account? ")
+                        Text("Already have an account?")
+                            .foregroundColor(.gray)
                         
                         NavigationLink(destination: LoginView()) {
                             Text("Login").foregroundColor(.blue)
                         }
-                    }.frame(maxWidth: .infinity, alignment: .center)
+                        .navigationBarBackButtonHidden(true) // Hides default back button
+                        
+                    }.padding(.top, 20)
+                    /*.frame(maxWidth: .infinity, alignment: .center)*/
                 }
-                .padding()
+                .padding(.horizontal, 30)
             }
         }
     }

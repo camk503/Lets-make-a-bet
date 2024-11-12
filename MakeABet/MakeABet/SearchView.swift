@@ -22,14 +22,14 @@ struct SearchView : View {
     var body: some View {
         NavigationView {
             VStack {
-                HStack {
+               /* HStack {
                     Button("Search Artists") {
                         page = 0
                     }.buttonStyle(.borderedProminent)
                     Button("Search Profiles") {
                         page = 1
                     }.buttonStyle(.borderedProminent)
-                }
+                }*/
                 VStack {
         
                     if page == 0 {
@@ -37,31 +37,30 @@ struct SearchView : View {
                             ProgressView("Loading all artists...")
                         } else {
                             // Print current top artists
-                            List(results.indices, id: \.self) { index in
-                                
-                                let artist = results[index]
-                                
-                                
-                                // Get position in all artists array
-                                if let allArtistsIndex = connect.allArtists.firstIndex(where: { $0.name == artist.name }) {
-                                    // Pass the position in the allArtists array to ArtistSearchView
-                                    ArtistSearchView(artist: artist, image: connect.images[artist.name], position: allArtistsIndex + 1)
-                                        .onAppear() {
-                                            if connect.images[artist.name] == nil {
-                                                connect.fetchImage(artist: artist.name) { result in
-                                                    switch result {
-                                                    case .success(let images):
-                                                        connect.images[artist.name] = images.first?.picture_big
-                                                    case .failure(let error):
-                                                        print("Error loading image for \(artist.name): \(error)")
+                            if !connect.topArtists.isEmpty || !connect.allArtists.isEmpty {
+                                List(results.indices, id: \.self) { index in
+                                    
+                                    let artist = results[index]
+                                    
+                                    // Get position in all artists array
+                                    if let allArtistsIndex = connect.allArtists.firstIndex(where: { $0.name == artist.name }) {
+                                        // Pass the position in the allArtists array to ArtistSearchView
+                                        ArtistSearchView(artist: artist, image: connect.images[artist.name], position: allArtistsIndex + 1)
+                                            .onAppear() {
+                                                if connect.images[artist.name] == nil {
+                                                    connect.fetchImage(artist: artist.name) { result in
+                                                        switch result {
+                                                        case .success(let images):
+                                                            connect.images[artist.name] = images.first?.picture_big
+                                                        case .failure(let error):
+                                                            print("Error loading image for \(artist.name): \(error)")
+                                                        }
                                                     }
                                                 }
                                             }
-                                        }
+                                    }
                                 }
-                                //ArtistSearchView(artist: artist, image: connect.images[artist.name], position: index + 1)
                             }
-                            
                         }
                     }
                     else if page == 1 {
@@ -70,13 +69,28 @@ struct SearchView : View {
                     
                 }
                 
-            }
+            }.navigationTitle("Search")
         }
         .searchable(text: $searchText)
         .onChange(of: searchText) { searchText in
             if !searchText.isEmpty {
                 // Should be able to search ALL artists
-                results = connect.allArtists.filter { $0.name.lowercased().contains(searchText.lowercased())}
+                results = connect.allArtists.filter { $0.name.lowercased().contains(searchText.lowercased())
+                }
+                
+                /*
+                for artist in results {
+                    if connect.images[artist.name] == nil {
+                        connect.fetchImage(artist: artist.name) { result in
+                            switch result {
+                            case .success(let images):
+                                connect.images[artist.name] = images.first?.picture_big
+                            case .failure(let error):
+                                print("Error loading image for \(artist.name): \(error)")
+                            }
+                        }
+                    }
+                }*/
             }
             else {
                 results = connect.topArtists

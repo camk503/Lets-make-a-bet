@@ -23,39 +23,39 @@ struct ArtistView : View {
     var body : some View {
         NavigationLink(destination: ArtistInfoView(name: artist.name, image: image, position: position)) {
             
-            HStack(spacing: 10) {
+            HStack(spacing: 15) {
             
-                Text("\(position)").font(.largeTitle)
+                Text("\(position)")
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .foregroundColor(.pink)
+                    .frame(width: 40, alignment: .center)
         
                 if let imageString = image, let imageURL = URL(string: imageString) {
-                    AsyncImage (
-                        url: imageURL,
-                        content: { img in
+                    AsyncImage (url: imageURL) { img in
                             img.resizable()
-                                .aspectRatio(contentMode: .fit)
+                                .aspectRatio(contentMode: .fill)
                                 .frame(width: 50, height: 50)
+                                .clipShape(Circle())
+                                .shadow(radius: 5)
                         
-                        },
+                        }
                         placeholder: {
                             ProgressView()
                         }
-                    )
                                     
                 } else {
-                    let placeholderURL = URL(string: DEFAULT)
-                    
-                    AsyncImage (
-                        url: placeholderURL,
-                        content: { img in
+                    AsyncImage (url: URL(string: DEFAULT)) { img in
                             img.resizable()
-                                .aspectRatio(contentMode: .fit)
+                                .aspectRatio(contentMode: .fill)
                                 .frame(width: 50, height: 50)
-                        },
+                                .clipShape(Circle())
+                                .shadow(radius: 5)
+                        }
                         placeholder: {
                             //Text("P")
                             ProgressView()
                         }
-                    )
                 }
                 
                 // Show icon for movement
@@ -73,35 +73,44 @@ struct ArtistView : View {
                 }
             
                 // Artist Information
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 5) {
                     
                     Text("\(artist.name.capitalized)")
                         .font(.headline)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.black)
                     
-                    HStack {
-                        VStack(alignment: .leading) {
+                    HStack(spacing: 10) {
+                        VStack(alignment: .leading, spacing: 2) {
                             Text("LISTENERS")
                                 .font(.system(size: 8))
+                                .foregroundColor(.gray)
                             Text(LastAPI.formatNumber(number: artist.listeners))
-                                .font(.system(size: 11))
+                                .font(.system(size: 10))
                         }
                         
-                        Spacer()
+                        Spacer(minLength: 4)
                         
                         VStack(alignment: .leading) {
                             Text("PLAYCOUNT")
                                 .font(.system(size: 8))
+                                .foregroundColor(.gray)
                             Text(LastAPI.formatNumber(number: artist.playcount))
-                                .font(.system(size: 11))
+                                .font(.system(size: 10))
                         }
                     }
                     
                 }
+                SwiftUI.Image(systemName: "chevron.right")
+                                    .foregroundColor(.pink)
                 
-            }.frame(maxWidth: .infinity, alignment: .leading) // Full width for content
-                .padding(.vertical, 15)
+            }//.buttonStyle(PlainButtonStyle())
+            .padding(12)
+                .background(Color.white)
+                .cornerRadius(10)
+                .shadow(color: .gray.opacity(0.2), radius: 5, x: 0, y: 4)
         }
-        .buttonStyle(.borderedProminent)
+        .buttonStyle(PlainButtonStyle())
     }
     
 }

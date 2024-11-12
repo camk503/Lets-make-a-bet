@@ -18,14 +18,19 @@ class LastAPI : ObservableObject {
     private let APIKey : String = "9e1855dd72c6c6933bae914bd3099bd4"
     private let baseURL : String = "https://ws.audioscrobbler.com/2.0/"
     
-    @Published var isLoading : Bool = true
-    @Published var topArtists : [Artist] = []
-    @Published var allArtists : [Artist] = []
-    @Published var images : [String:String] = [:]
+    @Published var isLoading : Bool /*= true*/
+    @Published var isLoadingImage : Bool
+    @Published var topArtists : [Artist] /*= []*/
+    @Published var allArtists : [Artist] /*= []*/
+    @Published var images : [String:String] /*= [:]*/
     
     
     init () {
-        // Load from cache?
+        self.isLoading = true
+        self.isLoadingImage = true
+        self.topArtists = []
+        self.allArtists = []
+        self.images = [:]
     }
     /**
         This function gets the current top artists for the week from Last.fm's API
@@ -160,26 +165,7 @@ class LastAPI : ObservableObject {
                 }
                 return
             }
-            
-            // Deezer API returns HTML response if too many calls
-            /* Check if HTML response and try again if so
-            if let response = response as? HTTPURLResponse, response.mimeType == "text/html" {
-                if retries > 0 {
-                    let newDelay = delay * 2
-                    print("HTML response detected for \(artist), retrying in \(newDelay) seconds...")
-                    DispatchQueue.global().asyncAfter(deadline: .now() + newDelay) {
-                        self.fetchImage(artist: artist, retries: retries - 1, delay: newDelay, completion: completion)
-                    }
-                    
-                } else {
-                    // Get error
-                    let error = NSError(domain: "DeezerAPIError", code: response.statusCode, userInfo: [NSLocalizedDescriptionKey: "Received HTML instead of JSON"])
-                    print("Error fetching data for \(artist), no retries left: \(error)")
-                    completion(.failure(error))
-                }
-                return
-            }*/
-            
+        
             if let data = data {
                 // Attempt to parse JSON data
                 // "completion" stores API result
@@ -227,6 +213,9 @@ class LastAPI : ObservableObject {
     func loadData(limit: Int) {
         // Load data only if not already loaded
         if (limit < 999 && topArtists.isEmpty) || (limit > 50 && allArtists.isEmpty) {
+            
+            self.isLoading = true
+            
             self.fetchTopArtists(limit: limit) { result in
                 // Wrap UI updates in DispatchQueue
                 DispatchQueue.main.async {
@@ -236,51 +225,11 @@ class LastAPI : ObservableObject {
                         print("SUCCESS!")
                         self.isLoading = false
                  
-                        /*
-                        if (limit == 50) {
-                            for artist in fetchedArtists {
-                                
-                                // Try to get image for artist from Deezer API
-                                self.fetchImage(artist: artist.name) { result in
-                                    switch result {
-                                        
-                                    case .success(let fetchedImages):
-                                        print("SUCCESS - images")
-                                        self.isLoading = false
-                                        
-                                        print(artist.name)
-                                        
-                                        // TODO: Better unwrapping
-                                        self.images.updateValue((fetchedImages.first?.picture_big)!, forKey: artist.name)
-                                        
-                                        
-                                    case .failure (let error):
-                                        self.isLoading = false
-                                        print("ERROR getting image for \(artist.name): \(error)")
-                                    }
-                                    
-                                }
-                                
-                            }
-                            
-                            self.topArtists = fetchedArtists
-                        } else {
-                            self.isLoading = false
-                            self.allArtists = fetchedArtists
-                            if (self.topArtists.isEmpty) {
-                                self.topArtists = Array(fetchedArtists.prefix(50))
-                            }
-                        }*/
-                        
+                        // Set published variables
                         self.allArtists = fetchedArtists
                         self.topArtists = Array(fetchedArtists.prefix(50))
                         
-                        /*if limit < 999 {
-                            self.topArtists = fetchedArtists
-                        } else {
-                            self.allArtists = fetchedArtists
-                            self.topArtists = Array(fetchedArtists.prefix(50))
-                        }*/
+                       
                     case .failure(let error):
                         self.isLoading = false
                         print("ERROR fetch failure: \(error)")
