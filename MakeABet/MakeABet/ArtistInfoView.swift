@@ -13,6 +13,8 @@ struct ArtistInfoView : View {
     @State var connect : LastAPI = LastAPI()
     @State var isLoading : Bool = true
     @State var artist : ArtistInfo? = nil
+    @State var biography : String = ""
+    //@State private var biography : AttributedString?
     
    
     let name : String
@@ -24,58 +26,107 @@ struct ArtistInfoView : View {
         VStack {
             if isLoading {
                 ProgressView("Loading information for \(name)...")
+                    .progressViewStyle(CircularProgressViewStyle(tint: .pink))
             }
             // If not nil
             else if let artist = artist {
-                
-                if let imageString = image,let imageURL = URL(string: imageString) {
-                    
-                    AsyncImage (
-                        url: imageURL,
-                        content: { img in
-                            img.resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 300, height: 300)
+                ScrollView() {
+                    if let imageString = image,let imageURL = URL(string: imageString) {
                         
-                        },
-                        placeholder: {
-                            ProgressView()
+                        AsyncImage (
+                            url: imageURL,
+                            content: { img in
+                                img.resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 250, height: 250)
+                                /*
+                                    .overlay(
+                                        Rectangle()
+                                            .stroke(Color.pink, lineWidth: 10)
+                                    )*/
+                                    .padding(.top, 10)
+                                    // .padding(.bottom, 10)
+                                
+                            },
+                            placeholder: {
+                                ProgressView()
+                            }
+                        )
+                        
+                    }
+                    
+                    HStack {
+                        Text("#\(position)")
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .foregroundColor(.pink)
+                        Text("\(artist.name.capitalized)")
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .foregroundColor(.black)
+                    }
+                    HStack(spacing: 20) {
+                        VStack(alignment: .leading) {
+                            Text("PLAYCOUNT")
+                                .font(.system(size: 16))
+                                .foregroundColor(.gray)
+                            Text(LastAPI.formatNumber(number: artist.stats.playcount))
+                                .font(.subheadline)
+                                .fontWeight(.bold)
+                                .foregroundColor(.black)
                         }
-                    )
-                                    
-                }
-                
-                HStack {
-                    Text("#\(position)")
-                    Text("\(artist.name.capitalized)")
-                        .font(.title)
-                }
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text("PLAYCOUNT")
-                            .font(.system(size: 16))
-                        Text(LastAPI.formatNumber(number: artist.stats.playcount))
-                            .font(.subheadline)
+                   
+                        Divider()
+                            .frame(height: 40)
+                            .background(Color.gray.opacity(0.4))
+                        
+                        VStack(alignment: .leading) {
+                            Text("LISTENERS")
+                                .font(.system(size: 16))
+                                .foregroundColor(.gray)
+                            Text(LastAPI.formatNumber(number: artist.stats.listeners))
+                                .font(.subheadline)
+                                .fontWeight(.bold)
+                                .foregroundColor(.black)
+                        }
                     }
-                    Spacer()
-                    VStack(alignment: .leading) {
-                        Text("LISTENERS")
-                            .font(.system(size: 16))
-                        Text(LastAPI.formatNumber(number: artist.stats.listeners))
-                            .font(.subheadline)
+                    .padding(.horizontal, 20)
+                    
+                    VStack(spacing: 6) {
+                        Text("Biography\n")
+                            .font(.headline)
+                            .fontWeight(.bold)
+                            .foregroundColor(.pink)
+                        
+                        // Biography of artist
+                        VStack(alignment: .leading) {
+                            
+                            Text("\(biography)")
+                                .font(.body)
+                                .foregroundColor(.black)
+                        }
+                        
+                        
                     }
+                    .padding(.horizontal, 20)
+                    .padding(.top, 30)
+                    
                 }
-                
-                Text("Biography\n").bold()
-                Text("\(artist.bio.summary)")
-                
             }
             
-            // TODO: Keep button at bottom while scrolling
-            Button("+ Add to lineup") {
+            Spacer()
+            
+            Button(action: {
                 print("Implement add to lineup here")
+            }) {
+                Text("+ Add to lineup")
+                    .fontWeight(.bold)
+                    .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
+            .tint(.pink)
+            .padding(.horizontal, 20)
+            .padding(.bottom, 10)
             
         }
         .padding()
@@ -88,8 +139,9 @@ struct ArtistInfoView : View {
                     case .success(let fetchedArtist):
                         print("SUCCESS!")
                         self.isLoading = false
-                        
                         self.artist = fetchedArtist
+                        self.formatBiography()
+                        
                     case .failure(let error):
                         self.isLoading = false
                         print("ERROR fetch failure: \(error)")
@@ -104,6 +156,29 @@ struct ArtistInfoView : View {
             }
             
         }
+    }
+    
+    // Format href in biography
+    private func formatBiography() {
+        if let artist = artist {
+            let summary = artist.bio.summary
+            
+            if summary.contains("<a") {
+                print("HI")
+                if let range = summary.range(of: " <a") {
+                    let chopped = summary[...range.lowerBound]
+                    
+                    self.biography = String(chopped)
+                    print(chopped)
+                }
+                
+            } else {
+                print("damn it")
+                self.biography = summary
+            }
+
+        }
+        
     }
     
 }

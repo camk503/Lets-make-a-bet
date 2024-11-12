@@ -89,7 +89,9 @@ struct ArtistView : View {
                                 .font(.system(size: 10))
                         }
                         
-                        Spacer(minLength: 4)
+                        Divider()
+                            .frame(height: 30)
+                            .background(Color.gray.opacity(0.4))
                         
                         VStack(alignment: .leading) {
                             Text("PLAYCOUNT")
