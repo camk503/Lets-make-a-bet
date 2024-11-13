@@ -8,6 +8,7 @@
 import Foundation
 import FirebaseCore
 import FirebaseAuth
+import FirebaseFirestore
 
 class AuthService: ObservableObject {
     
@@ -15,6 +16,7 @@ class AuthService: ObservableObject {
     @Published var errorDescription : String = ""
     
     private var stateHandle: AuthStateDidChangeListenerHandle?
+    private let db = Firestore.firestore()
     
     init() {
         stateHandle = Auth.auth().addStateDidChangeListener() { auth, user in
