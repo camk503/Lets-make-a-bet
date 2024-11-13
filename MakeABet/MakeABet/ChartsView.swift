@@ -15,7 +15,7 @@ struct ChartsView: View {
     // private let batchSize = 10 // Number of images to load per batch
     
     @State var movement : String = ""
-
+    
     // TODO: If isLoading for too long, give error message
     var body: some View {
         
@@ -27,7 +27,8 @@ struct ChartsView: View {
                     if connect.isLoading {
                         ProgressView("Loading top artists...")
                             .progressViewStyle(CircularProgressViewStyle(tint: .pink))
-                            .padding(.top, 50)
+                            //.padding(.top, 50)
+                            .background(Color.white.opacity(0.95))
                     }
                     else {
                         
@@ -80,7 +81,7 @@ struct ChartsView: View {
                             }.padding()
                                 .background(Color.white.opacity(0.95))
                                 .cornerRadius(10)
-                                
+                            
                             
                         } else {
                             Text("No artists available :(")
@@ -105,33 +106,11 @@ struct ChartsView: View {
                 }
                 
             }.navigationTitle("Charts")
-            .background(Color.gray.opacity(0.1))
+                .background(Color.gray.opacity(0.1))
         }
     }
-
+    
 }
-
-/*
-private func loadImage(for artistName: String) {
-    connect.fetchImage(artist: artistName) { result in
-        switch result {
-        case .success(let images):
-            connect.images[artistName] = images.first?.picture_big
-            //connect.isLoadingImage = false
-        case .failure(let error):
-            print("Error loading image for \(artistName): \(error)")
-            //connect.isLoadingImage = false
-        }
-    }
-}
-
-private func loadNextImageBatch() {
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-        // Increase the range for the next batch of images
-        lastLoadedIndex = min(lastLoadedIndex + batchSize, connect.topArtists.count - 1)
-    }
-}
-*/
 
 #Preview {
     ChartsView()

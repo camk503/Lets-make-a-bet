@@ -41,6 +41,10 @@ struct ContentView: View {
                     Label("Profile", systemImage: "person")
                 }
         }
+        .accentColor(.pink)
+        .background(.white)
+        .ignoresSafeArea(edges: .bottom)
+
 
     }
 }

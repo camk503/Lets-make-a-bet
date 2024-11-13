@@ -10,11 +10,18 @@ import SwiftUI
 struct LeaderboardView : View {
     var body : some View {
         NavigationView() {
-            VStack {
-                Text("Leaderboard")
-                    .font(.largeTitle)
-            }.navigationTitle("Leaderboard")
-                .background(Color.gray.opacity(0.1))
+            ZStack {
+                
+                Color.gray.opacity(0.1).ignoresSafeArea()
+                
+                VStack {
+                    Text("Leaderboard")
+                        .font(.largeTitle)
+                }.navigationTitle("Leaderboard")
+            }
         }
     }
+}
+#Preview() {
+    LeaderboardView()
 }
