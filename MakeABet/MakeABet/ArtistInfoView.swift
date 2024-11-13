@@ -158,22 +158,23 @@ struct ArtistInfoView : View {
         }
     }
     
-    // Format href in biography
+    /**
+        Last.fm artist biographies contain an href that doesn't register here as a link
+        This function removes that link completely from the biography
+     */
     private func formatBiography() {
         if let artist = artist {
             let summary = artist.bio.summary
             
+            // Check if html in bio
             if summary.contains("<a") {
-                print("HI")
                 if let range = summary.range(of: " <a") {
+                    // Store portion before the link
                     let chopped = summary[...range.lowerBound]
-                    
                     self.biography = String(chopped)
-                    print(chopped)
                 }
                 
             } else {
-                print("damn it")
                 self.biography = summary
             }
 

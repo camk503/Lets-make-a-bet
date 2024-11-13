@@ -19,7 +19,7 @@ struct ArtistSearchView: View {
     private let DEFAULT : String = "https://lastfm.freetls.fastly.net/i/u/34s/2a96cbd8b46e442fc41c2b86b821562f.png"
     
     var body: some View {
-        VStack {
+        VStack(alignment: .center) {
             if let imageString = image, let imageURL = URL(string: imageString) {
                 
                 AsyncImage (
@@ -50,14 +50,22 @@ struct ArtistSearchView: View {
                     }
                 )
             }
-            Text("#\(position)")
-                .font(.largeTitle)
+            HStack(alignment: .center) {
+                Text("#\(position)")
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .foregroundColor(.pink)
+                    .frame(minWidth: 60, alignment: .center)
+                
+                // Artist Information
+                Text("\(artist.name.capitalized)")
+                    .font(.title)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.black)
+                    .multilineTextAlignment(.center)
+            }
             
-            // Artist Information
-            Text("\(artist.name.capitalized)")
-                .font(.headline)
-            
-            HStack {
+            HStack(spacing: 20) {
                 // Text("#\(position)")
                 VStack(alignment: .leading) {
                     Text("LISTENERS")
@@ -65,7 +73,9 @@ struct ArtistSearchView: View {
                     Text(LastAPI.formatNumber(number:artist.listeners))
                         .font(.system(size: 11))
                 }
-                Spacer()
+                Divider()
+                    .frame(height: 30)
+                    .background(Color.gray.opacity(0.4))
                 
                 VStack(alignment: .leading) {
                     Text("PLAYCOUNT")
@@ -75,10 +85,17 @@ struct ArtistSearchView: View {
                 }
             }
             
-            Button("+ Add to lineup") {
+            Button(action: {
                 print("Implement add to lineup here")
+            }) {
+                Text("+ Add to lineup")
+                    .fontWeight(.bold)
             }
             .buttonStyle(.borderedProminent)
+            .tint(.pink)
+            .padding(.horizontal, 20)
+            .padding(.bottom, 10)
+            
             
             
         }.padding()
