@@ -39,6 +39,7 @@ struct ProfileView : View {
                 // https://firebase.google.com/docs/ios/setup
                 
             }.navigationTitle("Profile")
+                .background(Color.gray.opacity(0.1))
         }
     }
 }

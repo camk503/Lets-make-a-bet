@@ -14,6 +14,7 @@ struct LeaderboardView : View {
                 Text("Leaderboard")
                     .font(.largeTitle)
             }.navigationTitle("Leaderboard")
+                .background(Color.gray.opacity(0.1))
         }
     }
 }
