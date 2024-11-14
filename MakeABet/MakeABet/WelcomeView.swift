@@ -15,6 +15,7 @@ struct WelcomeView: View {
     @EnvironmentObject var authService: AuthService
     
     let db = Firestore.firestore()
+    @State var createError : String = ""
     
     func signIn() {
         Task {
@@ -75,6 +76,12 @@ struct WelcomeView: View {
                         .padding()
                         .background(Color.white)
                         .cornerRadius(10)
+                        // Red border if error
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(authService.errorDescription.isEmpty ? Color.clear : Color.red, lineWidth: 2)
+                        )
+                        
                         .shadow(color:.gray.opacity(0.3), radius: 10, x: 0, y: 3)
                         .textInputAutocapitalization(.never)
                         .disableAutocorrection(true)
@@ -83,9 +90,21 @@ struct WelcomeView: View {
                         .padding()
                         .background(Color.white)
                         .cornerRadius(10)
+                        // Red border if error
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(authService.errorDescription.isEmpty ? Color.clear : Color.red, lineWidth: 2)
+                        )
                         .shadow(color:.gray.opacity(0.3), radius: 10, x: 0, y: 3)
                         .textInputAutocapitalization(.never)
                         .disableAutocorrection(true)
+                    
+                    if !authService.errorDescription.isEmpty {
+                        Text(authService.errorDescription)
+                            .font(.footnote)
+                            .foregroundColor(.red)
+                            .padding(.top, 5)
+                    }
                     
                     Button("Create Account") {
                         createAccount()

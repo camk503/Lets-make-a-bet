@@ -15,6 +15,15 @@ struct LeaderboardView : View {
     
     var body : some View {
         NavigationView() {
+            ZStack {
+                
+                Color.gray.opacity(0.1).ignoresSafeArea()
+                
+                VStack {
+                    Text("Leaderboard")
+                        .font(.largeTitle)
+                }.navigationTitle("Leaderboard")
+            }
             VStack {
                 Text("Leaderboard")
                     .font(.largeTitle)
@@ -22,4 +31,7 @@ struct LeaderboardView : View {
             }.navigationTitle("Leaderboard")
         }
     }
+}
+#Preview() {
+    LeaderboardView()
 }

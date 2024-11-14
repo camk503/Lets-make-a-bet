@@ -9,13 +9,16 @@ import SwiftUI
 struct HomeView : View {
     var body : some View {
         NavigationView() {
-            VStack {
-                Text("Home")
-                    .font(.largeTitle)
-                
-                Text("On this page:\n1. Edit Lineup")
-                
-            }.navigationTitle("Home")
+            ZStack() {
+                Color.gray.opacity(0.1).ignoresSafeArea()
+                VStack {
+                    Text("Home")
+                        .font(.largeTitle)
+                    
+                    Text("On this page:\n1. Edit Lineup")
+                    
+                }.navigationTitle("Home")
+            }
         }
     }
 }

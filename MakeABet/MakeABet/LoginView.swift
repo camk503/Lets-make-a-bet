@@ -13,6 +13,8 @@ struct LoginView: View {
     @EnvironmentObject var authService: AuthService
     @Environment(\.dismiss) var dismiss
     
+    @State var loginError : String = ""
+    
     var body: some View {
         //NavigationView {
             ZStack {
@@ -38,22 +40,48 @@ struct LoginView: View {
                         .padding()
                         .background(Color.white)
                         .cornerRadius(10)
+                        // Red border if error
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(loginError.isEmpty ? Color.clear : Color.red, lineWidth: 2)
+                        )
+                    
                         .shadow(color:.gray.opacity(0.3), radius: 10, x: 0, y: 3)
                         .textInputAutocapitalization(.never)
                         .disableAutocorrection(true)
+            
                 
                     SecureField("Password", text: $password)
                         .padding()
                         .background(Color.white)
                         .cornerRadius(10)
+                        // Red border if error
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(loginError.isEmpty ? Color.clear : Color.red, lineWidth: 2)
+                        )
                         .shadow(color:.gray.opacity(0.3), radius: 10, x: 0, y: 3)
                         .textInputAutocapitalization(.never)
                         .disableAutocorrection(true)
+                
+                    
+                    // Display error message if there is one
+                    if !loginError.isEmpty {
+                        Text(loginError)
+                            .font(.footnote)
+                            .foregroundColor(.red)
+                            .padding(.top, 5)
+                    }
+                    
+                    
                     
                     Button("Login") {
                         authService.regularSignIn(email: email, password: password) { error in
                             if let e = error {
                                 print(e.localizedDescription)
+                                loginError = "Incorrect email or password. Please try again."
+                            } else {
+                                loginError = ""
                             }
                         }
                     }

@@ -16,6 +16,7 @@ struct StartView: View {
     var body: some View {
             if authService.signedIn {
                 ContentView().environmentObject(LastAPI())
+                    .environmentObject(FirebaseManager())
             } else {
                 WelcomeView()
             }
