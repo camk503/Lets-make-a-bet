@@ -6,11 +6,15 @@
 //
 
 import SwiftUI
+import FirebaseCore
+import FirebaseFirestore
 
 struct WelcomeView: View {
     @State private var email: String = ""
     @State private var password: String = ""
     @EnvironmentObject var authService: AuthService
+    
+    let db = Firestore.firestore()
     
     func signIn() {
         Task {
@@ -27,9 +31,22 @@ struct WelcomeView: View {
         Task {
             do {
                 try await authService.regularCreateAccount(email: email, password: password)
+                
             }
             catch {
                 print ("catched create account ")
+            }
+        }
+    }
+    
+    func createUserDocument() {
+        Task {
+            do {
+                let ref = try await db.collection("lineup").document(email).setData( ["email" : email], merge: true)
+                    
+            }
+            catch {
+                print ("catched create document")
             }
         }
     }
@@ -72,6 +89,7 @@ struct WelcomeView: View {
                     
                     Button("Create Account") {
                         createAccount()
+                        createUserDocument()
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)

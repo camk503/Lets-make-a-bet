@@ -5,6 +5,8 @@
 //  Created by Hannah Sheridan on 10/14/24.
 //
 import SwiftUI
+import FirebaseCore
+import FirebaseFirestore
 
 /**
  View to get the description of a music artist
@@ -21,6 +23,9 @@ struct ArtistInfoView : View {
     let image : String?
     let position : Int
     
+    let db = Firestore.firestore()
+    
+    @EnvironmentObject var authService : AuthService
     
     var body : some View {
         VStack {
@@ -117,7 +122,17 @@ struct ArtistInfoView : View {
             Spacer()
             
             Button(action: {
-                print("Implement add to lineup here")
+                
+                let ref =  db.collection("lineup").document(authService.email).setData(["artist1" : name])
+                
+                /*
+                do {
+                    let ref = try await db.collection("lineup").document(authService.email).setData(["artist1" : name])
+                }
+                catch {
+                    print("")
+                }
+                 */
             }) {
                 Text("+ Add to lineup")
                     .fontWeight(.bold)
@@ -186,4 +201,5 @@ struct ArtistInfoView : View {
 
 #Preview {
     ArtistInfoView(name: "Radiohead", image: "https://e-cdns-images.dzcdn.net/images/artist/9508c1217e880b52703a525d1bd5250c/250x250-000000-80-0-0.jpg", position: 1)
+        .environmentObject(AuthService())
 }

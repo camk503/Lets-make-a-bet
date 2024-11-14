@@ -13,6 +13,7 @@ class AuthService: ObservableObject {
     
     @Published var signedIn: Bool = false
     @Published var errorDescription : String = ""
+    @Published var email : String = ""
     
     private var stateHandle: AuthStateDidChangeListenerHandle?
     
@@ -37,6 +38,7 @@ class AuthService: ObservableObject {
                     
                 } else {
                     self.errorDescription = ""
+                    self.email = email
                     print("Successfully created password account")
                     
                 }
@@ -51,6 +53,7 @@ class AuthService: ObservableObject {
                 completion(e)
             } else {
                 print("Login success")
+                self.email = email 
                 completion(nil)
             }
         }
