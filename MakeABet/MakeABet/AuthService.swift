@@ -14,11 +14,9 @@ class AuthService: ObservableObject {
     
     @Published var signedIn: Bool = false
     @Published var errorDescription : String = ""
-<<<<<<< Updated upstream
+
     @Published var email : String = ""
-=======
-    // @Published var email : String = ""
->>>>>>> Stashed changes
+
     
     private var stateHandle: AuthStateDidChangeListenerHandle?
     private let db = Firestore.firestore()
