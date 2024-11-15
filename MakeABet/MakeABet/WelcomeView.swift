@@ -17,6 +17,10 @@ struct WelcomeView: View {
     let db = Firestore.firestore()
     @State var createError : String = ""
     
+    /*
+    @State var emailError : String = ""
+    @State var passError : String = ""*/
+    
     func signIn() {
         Task {
             do {
@@ -126,13 +130,17 @@ struct WelcomeView: View {
                         .navigationBarBackButtonHidden(true) // Hides default back button
                         
                     }.padding(.top, 20)
-                    /*.frame(maxWidth: .infinity, alignment: .center)*/
+
                 }
                 .padding(.horizontal, 30)
             }
         }
     }
-} 
+}
+
+func getErrorDescription() {
+    
+}
 
 struct WelcomeView_Previews: PreviewProvider {
     static var previews: some View {

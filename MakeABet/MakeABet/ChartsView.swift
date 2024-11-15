@@ -105,7 +105,7 @@ struct ChartsView: View {
                      }*/
                 }
                 
-            }.navigationTitle("Charts")
+            }//.navigationTitle("Charts")
                 .background(Color.gray.opacity(0.1))
         }
     }

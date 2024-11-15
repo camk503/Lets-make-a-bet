@@ -14,6 +14,7 @@ struct LoginView: View {
     @Environment(\.dismiss) var dismiss
     
     @State var loginError : String = ""
+    //@State var passError : String = ""
     
     var body: some View {
         //NavigationView {
@@ -71,7 +72,12 @@ struct LoginView: View {
                             .font(.footnote)
                             .foregroundColor(.red)
                             .padding(.top, 5)
-                    }
+                    }/* else if !emailError.isEmpty {
+                        Text(emailError)
+                            .font(.footnote)
+                            .foregroundColor(.red)
+                            .padding(.top, 5)
+                    }*/
                     
                     
                     

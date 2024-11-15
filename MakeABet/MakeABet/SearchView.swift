@@ -80,7 +80,7 @@ struct SearchView : View {
                     
                 }.padding()
                 
-            }.navigationTitle("Search")
+            }//.navigationTitle("Search")
                 .background(Color.gray.opacity(0.1))
                 
         }

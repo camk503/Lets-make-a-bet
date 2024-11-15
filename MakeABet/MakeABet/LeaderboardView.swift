@@ -22,7 +22,7 @@ struct LeaderboardView : View {
                 VStack {
                     Text("Leaderboard")
                         .font(.largeTitle)
-                }.navigationTitle("Leaderboard")
+                }//.navigationTitle("Leaderboard")
             }
             VStack {
                 Text("Leaderboard")

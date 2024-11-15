@@ -17,7 +17,7 @@ struct HomeView : View {
                     
                     Text("On this page:\n1. Edit Lineup")
                     
-                }.navigationTitle("Home")
+                }//.navigationTitle("Home")
             }
         }
     }
