@@ -12,14 +12,14 @@ import FirebaseFirestore
 struct WelcomeView: View {
     @State private var email: String = ""
     @State private var password: String = ""
+    @State private var username: String = ""
+    @State private var lineup : [String : String] = ["artist1": "", "artist2" : "", "artist3" : "", "artist4" : "", "artist5" : ""]
+    
     @EnvironmentObject var authService: AuthService
     
     let db = Firestore.firestore()
     @State var createError : String = ""
     
-    /*
-    @State var emailError : String = ""
-    @State var passError : String = ""*/
     
     func signIn() {
         Task {
@@ -47,7 +47,13 @@ struct WelcomeView: View {
     func createUserDocument() {
         Task {
             do {
-                let ref = try await db.collection("lineup").document(email).setData( ["email" : email], merge: true)
+                try await db.collection("users").document(email).setData(
+                    [
+                        "email" : email,
+                        "username" : username,
+                        "lineup" : lineup
+                    ],
+                    merge: true)
                     
             }
             catch {
@@ -77,6 +83,21 @@ struct WelcomeView: View {
                     
                     // Email and password fields
                     TextField("Email", text: $email)
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(10)
+                        // Red border if error
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(authService.errorDescription.isEmpty ? Color.clear : Color.red, lineWidth: 2)
+                        )
+                        
+                        .shadow(color:.gray.opacity(0.3), radius: 10, x: 0, y: 3)
+                        .textInputAutocapitalization(.never)
+                        .disableAutocorrection(true)
+                    
+                    // Username
+                    TextField("Username", text: $username)
                         .padding()
                         .background(Color.white)
                         .cornerRadius(10)

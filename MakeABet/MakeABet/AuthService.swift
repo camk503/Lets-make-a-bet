@@ -16,6 +16,8 @@ class AuthService: ObservableObject {
     @Published var errorDescription : String = ""
 
     @Published var email : String = ""
+    @Published var username : String = ""
+    @Published var lineup : [String: String] = [:]
 
     
     private var stateHandle: AuthStateDidChangeListenerHandle?
@@ -31,6 +33,8 @@ class AuthService: ObservableObject {
                 print("Auth state changed, is signed out")
             }
         }
+        
+        
     }
     
     // MARK: - Password Account
