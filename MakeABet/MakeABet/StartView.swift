@@ -8,18 +8,20 @@
 import SwiftUI
 import FirebaseCore
 import FirebaseAuth
-//import FirebaseAuth
 
 struct StartView: View {
     @EnvironmentObject var authService: AuthService
     
     var body: some View {
-            if authService.signedIn {
-                ContentView().environmentObject(LastAPI())
-                    .environmentObject(FirebaseManager())
-            } else {
+        if authService.signedIn {
+            ContentView().environmentObject(LastAPI())
+                .environmentObject(FirebaseManager())
+                //.environmentObject(AuthService())
+
+        }
+        else {
                 WelcomeView()
-            }
+        }
     }
 }
 

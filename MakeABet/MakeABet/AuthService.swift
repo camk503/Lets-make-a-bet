@@ -16,6 +16,8 @@ class AuthService: ObservableObject {
     @Published var errorDescription : String = ""
 
     @Published var email : String = ""
+    @Published var username : String = ""
+    @Published var lineup : [String: String] = [:]
 
     
     private var stateHandle: AuthStateDidChangeListenerHandle?
@@ -31,10 +33,60 @@ class AuthService: ObservableObject {
                 print("Auth state changed, is signed out")
             }
         }
+        
+        
+    }
+    
+    func createUserDocument(email: String, username: String) {
+        Task {
+            do {
+                try await db.collection("users").document(email).setData(
+                    [
+                        "email" : email,
+                        "username" : username,
+                        "lineup" :  ["artist1": "", "artist2" : "", "artist3" : "", "artist4" : "", "artist5" : ""]
+                    ],
+                    merge: true)
+                    
+            }
+            catch {
+                print ("catched create document")
+            }
+        }
+    }
+    
+    func loadUserDocument() async {
+        let docRef = db.collection("users").document(self.email)
+        do
+        {
+            let doc = try await docRef.getDocument()
+            if doc.exists
+            {
+                for (key, value) in doc.data() ?? ["nil" : ""]
+                {
+                    if key == "username"
+                    {
+                        self.username = value as? String ?? ""
+                    }
+                    else if key == "lineup"
+                    {
+                        self.lineup = value as? [String : String] ?? ["artist1": "", "artist2" : "", "artist3" : "", "artist4" : "", "artist5" : ""]
+                    }
+                }
+            }
+            else
+            {
+                print("No user document found")
+            }
+        }
+        catch
+        {
+            print("Could not load user data")
+        }
     }
     
     // MARK: - Password Account
-    func regularCreateAccount(email: String, password: String) async throws {
+    func regularCreateAccount(email: String, password: String, username: String) async throws {
             Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
                 if let e = error {
                     self.errorDescription = e.localizedDescription
@@ -43,6 +95,7 @@ class AuthService: ObservableObject {
                 } else {
                     self.errorDescription = ""
                     self.email = email
+                    self.createUserDocument(email: email, username: username)
                     print("Successfully created password account")
                     
                 }
@@ -57,7 +110,11 @@ class AuthService: ObservableObject {
                 completion(e)
             } else {
                 print("Login success")
-                self.email = email 
+                self.email = email
+                Task
+                {
+                    await self.loadUserDocument()
+                }
                 completion(nil)
             }
         }
@@ -69,6 +126,8 @@ class AuthService: ObservableObject {
         let firebaseAuth = Auth.auth()
         do {
             try firebaseAuth.signOut()
+            email = ""
+            username = ""
             completion(nil)
         } catch let signOutError as NSError {
           print("Error signing out: %@", signOutError)

@@ -123,7 +123,7 @@ struct ArtistInfoView : View {
             
             Button(action: {
                 
-                let ref =  db.collection("lineup").document(authService.email).setData(["artist1" : name])
+                let ref =  db.collection("users").document(authService.email).setData(["artist1" : name])
                 
                 /*
                 do {

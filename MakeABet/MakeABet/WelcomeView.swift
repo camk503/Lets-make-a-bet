@@ -12,19 +12,18 @@ import FirebaseFirestore
 struct WelcomeView: View {
     @State private var email: String = ""
     @State private var password: String = ""
+    @State private var username: String = ""
+    
     @EnvironmentObject var authService: AuthService
     
     let db = Firestore.firestore()
     @State var createError : String = ""
     
-    /*
-    @State var emailError : String = ""
-    @State var passError : String = ""*/
     
     func signIn() {
         Task {
             do {
-                try await authService.regularCreateAccount(email: email, password: password)
+                try await authService.regularCreateAccount(email: email, password: password, username: username)
             }
             catch {
                 print ("catched failed signin ")
@@ -35,7 +34,7 @@ struct WelcomeView: View {
     func createAccount() {
         Task {
             do {
-                try await authService.regularCreateAccount(email: email, password: password)
+                try await authService.regularCreateAccount(email: email, password: password, username: username)
                 
             }
             catch {
@@ -43,19 +42,7 @@ struct WelcomeView: View {
             }
         }
     }
-    
-    func createUserDocument() {
-        Task {
-            do {
-                let ref = try await db.collection("lineup").document(email).setData( ["email" : email], merge: true)
-                    
-            }
-            catch {
-                print ("catched create document")
-            }
-        }
-    }
-    
+
     var body: some View {
         NavigationView {
             ZStack {
@@ -77,6 +64,21 @@ struct WelcomeView: View {
                     
                     // Email and password fields
                     TextField("Email", text: $email)
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(10)
+                        // Red border if error
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(authService.errorDescription.isEmpty ? Color.clear : Color.red, lineWidth: 2)
+                        )
+                        
+                        .shadow(color:.gray.opacity(0.3), radius: 10, x: 0, y: 3)
+                        .textInputAutocapitalization(.never)
+                        .disableAutocorrection(true)
+                    
+                    // Username
+                    TextField("Username", text: $username)
                         .padding()
                         .background(Color.white)
                         .cornerRadius(10)
@@ -112,7 +114,6 @@ struct WelcomeView: View {
                     
                     Button("Create Account") {
                         createAccount()
-                        createUserDocument()
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)

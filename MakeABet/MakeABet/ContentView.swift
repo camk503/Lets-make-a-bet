@@ -9,6 +9,8 @@ import SwiftUI
 
 // Navigate between screens
 struct ContentView: View {
+    //@EnvironmentObject var authService: AuthService
+    
     var body: some View {
         VStack(spacing: 0) {
             HStack() {
@@ -29,8 +31,6 @@ struct ContentView: View {
                     .foregroundColor(.white)
                     .font(.headline)
                     .padding()
-                    
-                    
             }.background(.gray.opacity(0.1))
             
             Divider()
@@ -71,12 +71,21 @@ struct ContentView: View {
             .ignoresSafeArea(edges: .bottom)
             
             
-        }
+        }/*.onAppear()
+        {
+            Task
+            {
+                await authService.loadUserDocument()
+            }
+        }*/
     }
 }
 
-#Preview {
-    ContentView()
-        .environmentObject(LastAPI())
-        .environmentObject(FirebaseManager())
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+            //.environmentObject(AuthService())
+            .environmentObject(LastAPI())
+            .environmentObject(FirebaseManager())
+    }
 }

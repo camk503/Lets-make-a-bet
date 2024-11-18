@@ -7,23 +7,23 @@
 
 import SwiftUI
 import FirebaseCore
+import FirebaseFirestore
 
 struct ProfileView : View {
-    var username : String = ""
     var preferNotifications = true
     
-    @State private var email: String = ""
-    @State private var password: String = ""
     @EnvironmentObject var authService: AuthService
+        
     
-    var body : some View {
+    var body : some View
+    {
         NavigationView() {
             ZStack {
                 Color.gray.opacity(0.1).ignoresSafeArea()
                 VStack {
                     Text("This is the profile")
                     
-                    Text("Username: ")
+                    Text("Username: \(authService.username)")
                     
                     Button("Log out") {
                         print("Log out tapped!")
