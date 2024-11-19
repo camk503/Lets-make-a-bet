@@ -27,9 +27,9 @@ struct StartView_Previews: PreviewProvider {
 
     static var previews: some View {
         if authService.signedIn {
-            ContentView()
+            ContentView().environmentObject(authService)
         } else {
-            WelcomeView()
+            WelcomeView().environmentObject(authService)
         }
     }
 }
