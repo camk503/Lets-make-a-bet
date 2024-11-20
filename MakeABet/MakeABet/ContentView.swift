@@ -10,56 +10,73 @@ import SwiftUI
 // Navigate between screens
 struct ContentView: View {
     var body: some View {
-        TabView() {
-            // Home View
-            HomeView()
-                .tabItem() {
-                    Label("Home", systemImage: "house")
-                }
-            // Charts View
-            ChartsView()
-                .tabItem() {
-                    Label("Charts", systemImage: "chart.line.text.clipboard")
-                }
+        VStack(spacing: 0) {
+            HStack() {
+                // Top Bar
+                Text("Let's Make A Bet")
+                    .foregroundColor(.pink)
+                    .fontWeight(.bold)
+                    .font(.system(size: 20))
+                    .padding()
+                
+                Spacer()
+                
+                Text(" Score ")
+                    .fontWeight(.bold)
+                    .padding(4)
+                    .background(.pink)
+                    .cornerRadius(10)
+                    .foregroundColor(.white)
+                    .font(.headline)
+                    .padding()
+                    
+                    
+            }.background(.gray.opacity(0.1))
             
-            // Search View
-            SearchView()
-                .tabItem() {
-                    Label("Search", systemImage: "magnifyingglass")
-                }
+            Divider()
             
-            // Leaderboard View
-            LeaderboardView()
-                .tabItem() {
-                    Label("Leaderboard", systemImage: "chart.bar")
-                }
+            TabView() {
+                // Home View
+                HomeView()
+                    .tabItem() {
+                        Label("Home", systemImage: "house")
+                    }
+                
+                // Charts View
+                ChartsView()
+                    .tabItem() {
+                        Label("Charts", systemImage: "chart.line.text.clipboard")
+                    }
+                
+                // Search View
+                SearchView()
+                    .tabItem() {
+                        Label("Search", systemImage: "magnifyingglass")
+                    }
+                
+                // Leaderboard View
+                LeaderboardView()
+                    .tabItem() {
+                        Label("Leaderboard", systemImage: "chart.bar")
+                    }
+                
+                // Profile View
+                ProfileView()
+                    .tabItem() {
+                        Label("Profile", systemImage: "person")
+                    }
+            }
+            .accentColor(.pink)
+            .background(.white)
+            .ignoresSafeArea(edges: .bottom)
             
-            // Profile View
-            ProfileView()
-                .tabItem() {
-                    Label("Profile", systemImage: "person")
-                }
             
         }
-
     }
 }
 
 #Preview {
     ContentView()
-}
-
-struct HomeView : View {
-    var body : some View {
-        VStack {
-            Text("This is home \n(see lineups here or on its own page ?)")
-        }
-    }
-}
-struct LeaderboardView : View {
-    var body : some View {
-        VStack {
-            Text("This is the leaderboard")
-        }
-    }
+        .environmentObject(LastAPI())
+        .environmentObject(FirebaseManager())
 }

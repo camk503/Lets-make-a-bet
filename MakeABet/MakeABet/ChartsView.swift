@@ -8,98 +8,112 @@
 import SwiftUI
 
 struct ChartsView: View {
-    // TODO: one connect for all views?
-    @State var connect : LastAPI = LastAPI()
-    @State var artists : [Artist] = []
-    @State var images : [String:String] = [:]
+    @EnvironmentObject var connect : LastAPI
+    @EnvironmentObject var manager : FirebaseManager
     
-    //TODO: If isLoading for too long, give error message
-    @State var isLoading : Bool = true
-    let LIMIT = 50
+    // @State private var lastLoadedIndex = 0
+    // private let batchSize = 10 // Number of images to load per batch
     
-    // TODO: Format artist to show up or down arrow and photo
+    @State var movement : String = ""
+    
+    // TODO: If isLoading for too long, give error message
     var body: some View {
         
         // To allow for navigation between ArtistView and ArtistInfoView
         NavigationView {
-            VStack {
-                
-                if isLoading {
-                    ProgressView("Loading top artists...")
-                }
-                else {
-                    // Heading
-                    Text("Top \(LIMIT) Artists")
-                        .font(.title)
-                    
-                    // Print current top artists
-                    List(artists.indices, id: \.self) { index in
-                        // Some artists dont have an mbid, use index
-                        let artist = artists[index]
-                        
-                        // TODO: Better unwrapping
-                        ArtistView(artist: artist, image: images[artist.name], position: index + 1)
+            ZStack {
+                // Color.gray.opacity(0.1)
+                VStack {
+                    if connect.isLoading {
+                        ProgressView("Loading top artists...")
+                            .progressViewStyle(CircularProgressViewStyle(tint: .pink))
+                            //.padding(.top, 50)
+                            .background(Color.white.opacity(0.95))
                     }
-                }
-                
-            }
-            .padding()
-            .onAppear() {
-                
-                /*if (isLoading) {
-                    var data = connect.fetchAllData(limit: LIMIT)
-                    
-                    self.artists = data.0
-                    self.images = data.1
-                }*/
-                
-                /* I dont like this duplicate code (in SearchView too) but idk how else to do it */
-                if (isLoading) {
-                    connect.fetchTopArtists(limit: LIMIT) { result in
-                        switch result {
-                            
-                        case .success(let fetchedArtists):
-                            print("SUCCESS!")
-                            //self.isLoading = false
-                            for artist in fetchedArtists {
+                    else {
+                        
+                        if !connect.topArtists.isEmpty {
+                            ScrollView {
+                                // Heading
+                                Text("Global Top 50")
+                                    .font(.largeTitle)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.pink)
+                                    .padding()
                                 
-                                // Try to get image for artist from Deezer API
-                                connect.fetchImage(artist: artist.name) { result in
-                                    switch result {
+                                LazyVStack(spacing: 15) {
+                                    // Print current top artists
+                                    ForEach(connect.topArtists.indices, id: \.self) { index in
                                         
-                                    case .success(let fetchedImages):
-                                        print("SUCCESS - images")
-                                        self.isLoading = false
+                                        // Some artists dont have an mbid, use index
+                                        let artist = connect.topArtists[index]
                                         
-                                        print(artist.name)
-                                        // print((fetchedImages.first?.picture)!)
+                                        // Get movement of artist on chart
+                                        let movement = manager.updateMovement(for: artist.name, at: index)
                                         
-                                        // TODO: Better unwrapping
-                                        self.images.updateValue((fetchedImages.first?.picture_big)!, forKey: artist.name)
-                                        
-                                        
-                                    case .failure (let error):
-                                        self.isLoading = false
-                                        print("ERROR getting image for \(artist.name): \(error)")
+                                        // Print artist info to page
+                                        ArtistView (
+                                            artist: artist,
+                                            image: connect.images[artist.name],
+                                            position: index + 1,
+                                            movement: movement
+                                        )
+                                        .buttonStyle(PlainButtonStyle())
+                                        .onAppear() {
+                                            if connect.images[artist.name] == nil {
+                                                
+                                                //connect.isLoadingImage = true
+                                                connect.fetchImage(artist: artist.name) { result in
+                                                    switch result {
+                                                    case .success(let images):
+                                                        connect.images[artist.name] = images.first?.picture_big
+                                                        //connect.isLoadingImage = false
+                                                    case .failure(let error):
+                                                        print("Error loading image for \(artist.name): \(error)")
+                                                        //connect.isLoadingImage = false
+                                                    }
+                                                }
+                                            }
+                                            
+                                        }
                                     }
-                                    
                                 }
-                                
-                            }
+                            }.padding()
+                                .background(Color.white.opacity(0.95))
+                                .cornerRadius(10)
                             
-                            self.artists = fetchedArtists
                             
-                        case .failure(let error):
-                            self.isLoading = false
-                            print("ERROR fetch failure: \(error)")
-                            
+                        } else {
+                            Text("No artists available :(")
+                                .font(.headline)
+                                .fontWeight(.bold)
+                                .foregroundColor(.pink)
+                                .padding(.top, 30)
+                            Text("Please check connection and try again.")
+                                .fontWeight(.bold)
+                                .foregroundColor(.gray)
                         }
-                        
-                        
                     }
+                    
                 }
-            }
+                .padding()
+                .onAppear() {
+                    // connect.isLoading = true
+                    connect.loadData(limit: 50)
+                    /*if !connect.topArtists.isEmpty {
+                     connect.isLoading = false
+                     }*/
+                }
+                
+            }//.navigationTitle("Charts")
+                .background(Color.gray.opacity(0.1))
         }
     }
+    
 }
 
+#Preview {
+    ChartsView()
+        .environmentObject(LastAPI())
+        .environmentObject(FirebaseManager())
+}
