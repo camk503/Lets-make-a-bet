@@ -13,6 +13,7 @@ struct WelcomeView: View {
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var username: String = ""
+    @State private var lineup : [String : String] = ["artist1": "", "artist2" : "", "artist3" : "", "artist4" : "", "artist5" : ""]
     
     @EnvironmentObject var authService: AuthService
     
@@ -39,6 +40,24 @@ struct WelcomeView: View {
             }
             catch {
                 print ("catched create account ")
+            }
+        }
+    }
+    
+    func createUserDocument() {
+        Task {
+            do {
+                try await db.collection("users").document(email).setData(
+                    [
+                        "email" : email,
+                        "username" : username,
+                        "lineup" : lineup
+                    ],
+                    merge: true)
+                    
+            }
+            catch {
+                print ("catched create document")
             }
         }
     }
