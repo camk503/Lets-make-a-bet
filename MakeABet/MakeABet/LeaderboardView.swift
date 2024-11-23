@@ -13,6 +13,10 @@ struct LeaderboardView : View {
     
     let db = Firestore.firestore()
     
+    private let profileModel = ProfileModel()
+    private let leaderboardModel = LeaderboardModel()
+
+    
     var body : some View {
         NavigationView() {
             ZStack {
@@ -31,6 +35,20 @@ struct LeaderboardView : View {
             }.navigationTitle("Leaderboard")
         }
     }
+    
+    private func fetchScore() {
+            profileModel.getLineup { result in
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                    switch result {
+                    case .success(let score):
+                        self.lineup = score
+                    case .failure(let error):
+                        print("Error loading lineup: \(error.localizedDescription)")
+                    }
+                }
+            }
+        }
 }
 #Preview() {
     LeaderboardView()
