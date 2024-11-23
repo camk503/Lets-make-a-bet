@@ -17,6 +17,7 @@ struct ArtistInfoView : View {
     @State var artist : ArtistInfo? = nil
     @State var biography : String = ""
     @State private var lineup : [String] = []
+    @State private var currentScore : Int = 0
     //@State private var biography : AttributedString?
     
    
@@ -134,6 +135,8 @@ struct ArtistInfoView : View {
                 Button(action: {
                     lineup.append(name)
                     profileModel.addToLineup(artist: name)
+                    profileModel.addToScore(addScore: position)
+                    //changed to addToScore
                 }) {
                     Text("+ Add to lineup")
                         .fontWeight(.bold)
@@ -177,11 +180,27 @@ struct ArtistInfoView : View {
                         
                     }
                     
-                    
                 }
                 
-                
-                
+            }
+            fetchScore()
+            
+            if(isLoading) {
+                connect.fetchScore(currentScore: position) { result in
+                    switch result {
+                        
+                    case .success(let fetchedScore):
+                        print("SUCCESS!")
+                        self.isLoading = false
+                        self.currentScore = fetchedScore
+                        
+                    case .failure(let error):
+                        self.isLoading = false
+                        print("ERROR fetch failure: \(error)")
+                        
+                    }
+                    
+                }
             }
             
         }
@@ -224,6 +243,20 @@ struct ArtistInfoView : View {
                 }
             }
         }
+    
+    private func fetchScore() {
+        profileModel.getScore { result in
+            DispatchQueue.main.async {
+                self.isLoading = false
+                switch result {
+                case .success(let score):
+                    self.currentScore = score
+                case .failure(let error):
+                    print("Error loading score: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
     
 }
 

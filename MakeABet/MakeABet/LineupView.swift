@@ -9,10 +9,16 @@ import SwiftUI
 
 struct LineupView: View {
     @State private var lineup: [String] = []
+    @State private var currentScore: Int = 0
     @State private var isLoading: Bool = true
     @State private var errorMessage: String?
+    
+    @State var connect : LastAPI = LastAPI()
+    @State var isLoading : Bool = true
+    @State var artist : ArtistInfo? = nil
 
     let profileModel = ProfileModel()
+    
 
     var body: some View {
         VStack {
@@ -46,6 +52,7 @@ struct LineupView: View {
         }
         .onAppear {
             fetchLineup()
+            fetchScore()
         }
         .padding()
     }
@@ -59,6 +66,20 @@ struct LineupView: View {
                     lineup = artists
                 case .failure(let error):
                     errorMessage = "Failed to load lineup: \(error.localizedDescription)"
+                }
+            }
+        }
+    }
+    
+    private func fetchScore() {
+        profileModel.getScore { result in
+            DispatchQueue.main.async {
+                isLoading = false
+                switch result {
+                case .success(let score):
+                    currentScore = score
+                case .failure(let error):
+                    errorMessage = "Failed to load score: \(error.localizedDescription)"
                 }
             }
         }
