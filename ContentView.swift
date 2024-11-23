@@ -1,65 +1,82 @@
 //
 //  ContentView.swift
-//  PlusMinus
+//  MakeABet
 //
-//  Created by Olivia Alexander on 9/21/24.
+//  Created by Olivia Alexander on 10/10/24.
 //
 
 import SwiftUI
 
+// Navigate between screens
 struct ContentView: View {
-    @State private var value = 0
-    static var MAXVAL = 5
-    
-    @State private var color = Color.black
-    
-    func subtractNum() {
-        if value > 0 - ContentView.MAXVAL {
-            value = value - 1
-        }
-        if value < 0 {
-            color = Color.red
-        }
-        else {
-            color = Color.black
-        }
-        
-    }
-    
-    func addNum() {
-        if value < ContentView.MAXVAL {
-            value = value + 1
-        }
-        if value < 0 {
-            color = Color.red
-        }
-        else {
-            color = Color.black
-        }
-    }
-    
-    
     var body: some View {
-        VStack (spacing: 50) {
-            Text("PlusMinus").font(.largeTitle)
+        VStack(spacing: 0) {
+            HStack() {
+                // Top Bar
+                Text("Let's Make A Bet")
+                    .foregroundColor(.pink)
+                    .fontWeight(.bold)
+                    .font(.system(size: 20))
+                    .padding()
+                
+                Spacer()
+                
+                Text(" Score ")
+                    .fontWeight(.bold)
+                    .padding(4)
+                    .background(.pink)
+                    .cornerRadius(10)
+                    .foregroundColor(.white)
+                    .font(.headline)
+                    .padding()
+                    
+                    
+            }.background(.gray.opacity(0.1))
             
-            // value and number
-            HStack(spacing: 40) {
-                Text("value").font(.largeTitle)
-                // display changing value
-                Text("\(value)").font(.largeTitle).foregroundColor(color)
+            Divider()
+            
+            TabView() {
+                // Home View
+                LineupView()
+                    .tabItem() {
+                        Label("Home", systemImage: "house")
+                    }
+                
+                // Charts View
+                ChartsView()
+                    .tabItem() {
+                        Label("Charts", systemImage: "chart.line.text.clipboard")
+                    }
+                
+                // Search View
+                SearchView()
+                    .tabItem() {
+                        Label("Search", systemImage: "magnifyingglass")
+                    }
+                
+                // Leaderboard View
+                LeaderboardView()
+                    .tabItem() {
+                        Label("Leaderboard", systemImage: "chart.bar")
+                    }
+                
+                // Profile View
+                ProfileView()
+                    .tabItem() {
+                        Label("Profile", systemImage: "person")
+                    }
             }
-            //minus and plus buttons
-            HStack(spacing: 40) {
-                Button("-",action: subtractNum).font(.largeTitle)
-                Button("+",action: addNum).font(.largeTitle)
-            }
-             
+            .accentColor(.pink)
+            .background(.white)
+            .ignoresSafeArea(edges: .bottom)
+            
+            
         }
-        .padding()
     }
 }
 
 #Preview {
     ContentView()
+        .environmentObject(LastAPI())
+        .environmentObject(FirebaseManager())
 }
