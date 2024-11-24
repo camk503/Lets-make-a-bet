@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+
+
 // Navigate between screens
 struct ContentView: View {
     var body: some View {
@@ -37,7 +39,8 @@ struct ContentView: View {
             
             TabView() {
                 // Home View
-                HomeView()
+                // Changed to LineupView????
+                LineupView()
                     .tabItem() {
                         Label("Home", systemImage: "house")
                     }

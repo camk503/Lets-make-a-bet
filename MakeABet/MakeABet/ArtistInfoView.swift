@@ -29,8 +29,8 @@ struct ArtistInfoView : View {
     
     private let profileModel = ProfileModel()
     
-    
     @EnvironmentObject var authService : AuthService
+
     
     
     
@@ -183,10 +183,12 @@ struct ArtistInfoView : View {
                 }
                 
             }
+            
             fetchScore()
             
+            /*
             if(isLoading) {
-                connect.fetchScore(currentScore: position) { result in
+                fetchScore(currentScore: position) { result in
                     switch result {
                         
                     case .success(let fetchedScore):
@@ -201,7 +203,7 @@ struct ArtistInfoView : View {
                     }
                     
                 }
-            }
+            }*/
             
         }
     }

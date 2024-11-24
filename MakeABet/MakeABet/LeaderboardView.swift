@@ -10,11 +10,14 @@ import FirebaseCore
 import FirebaseFirestore
 
 struct LeaderboardView : View {
+    @State var isLoading : Bool = true
+    @State var lineup : [String] = []
     
     let db = Firestore.firestore()
     
     private let profileModel = ProfileModel()
-    private let leaderboardModel = LeaderboardModel()
+    
+    // private let leaderboardModel = LeaderboardModel()
 
     
     var body : some View {

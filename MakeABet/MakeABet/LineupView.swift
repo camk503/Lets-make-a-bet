@@ -14,7 +14,7 @@ struct LineupView: View {
     @State private var errorMessage: String?
     
     @State var connect : LastAPI = LastAPI()
-    @State var isLoading : Bool = true
+    // @State var isLoading : Bool = true
     @State var artist : ArtistInfo? = nil
 
     let profileModel = ProfileModel()
@@ -42,6 +42,7 @@ struct LineupView: View {
             } else {
                 ScrollView {
                     VStack(spacing: 16) {
+                        Text("Score: \(currentScore)")
                         ForEach(lineup.indices, id: \.self) { index in
                             LineupCardView(artistName: lineup[index], position: index + 1)
                         }
