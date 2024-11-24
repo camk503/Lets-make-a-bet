@@ -6,11 +6,19 @@
 //
 
 import SwiftUI
-
-
+import FirebaseCore
+import FirebaseFirestore
 
 // Navigate between screens
 struct ContentView: View {
+    
+    @State var isLoading : Bool = true
+    @State private var currentScore : Int = 0
+    
+    let db = Firestore.firestore()
+    
+    private let profileModel = ProfileModel()
+    
     var body: some View {
         VStack(spacing: 0) {
             HStack() {
@@ -23,7 +31,7 @@ struct ContentView: View {
                 
                 Spacer()
                 
-                Text(" Score ")
+                Text(" Score: \(currentScore)")
                     .fontWeight(.bold)
                     .padding(4)
                     .background(.pink)
@@ -31,15 +39,16 @@ struct ContentView: View {
                     .foregroundColor(.white)
                     .font(.headline)
                     .padding()
-                    
-                    
+                
+                
             }.background(.gray.opacity(0.1))
+            
             
             Divider()
             
+            
             TabView() {
                 // Home View
-                // Changed to LineupView????
                 LineupView()
                     .tabItem() {
                         Label("Home", systemImage: "house")
@@ -68,12 +77,28 @@ struct ContentView: View {
                     .tabItem() {
                         Label("Profile", systemImage: "person")
                     }
+                }
+                .accentColor(.pink)
+                .background(.white)
+                .ignoresSafeArea(edges: .bottom)
+            
+        }.onAppear() {
+            fetchScore()
+        }
+        
+    }
+
+    private func fetchScore() {
+        profileModel.getScore { result in
+            DispatchQueue.main.async {
+                self.isLoading = false
+                switch result {
+                case .success(let score):
+                    self.currentScore = score
+                case .failure(let error):
+                    print("Error loading score: \(error.localizedDescription)")
+                }
             }
-            .accentColor(.pink)
-            .background(.white)
-            .ignoresSafeArea(edges: .bottom)
-            
-            
         }
     }
 }

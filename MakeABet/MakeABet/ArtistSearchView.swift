@@ -13,6 +13,7 @@ import SwiftUI
  */
 struct ArtistSearchView: View {
     @State private var lineup : [String] = []
+    @State private var currentScore : Int = 0
     @State private var isLoading : Bool = true
     var artist : Artist
     var image : String?
@@ -92,6 +93,7 @@ struct ArtistSearchView: View {
                 Button(action: {
                     lineup.append(artist.name)
                     profileModel.addToLineup(artist: artist.name)
+                    profileModel.addToScore(addScore: position)
                 }) {
                     Text("+ Add to lineup")
                         .fontWeight(.bold)
@@ -118,6 +120,7 @@ struct ArtistSearchView: View {
             .background(Color.clear)
             .onAppear() {
                 fetchLineup()
+                fetchScore()
             }
     }
     
@@ -130,6 +133,20 @@ struct ArtistSearchView: View {
                     self.lineup = artists
                 case .failure(let error):
                     print("Error loading lineup: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    private func fetchScore() {
+        profileModel.getScore { result in
+            DispatchQueue.main.async {
+                self.isLoading = false
+                switch result {
+                case .success(let score):
+                    self.currentScore = score
+                case .failure(let error):
+                    print("Error loading score: \(error.localizedDescription)")
                 }
             }
         }

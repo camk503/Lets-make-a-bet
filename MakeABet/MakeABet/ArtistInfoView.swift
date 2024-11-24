@@ -19,7 +19,6 @@ struct ArtistInfoView : View {
     @State private var lineup : [String] = []
     @State private var currentScore : Int = 0
     //@State private var biography : AttributedString?
-    
    
     let name : String
     let image : String?
@@ -30,8 +29,6 @@ struct ArtistInfoView : View {
     private let profileModel = ProfileModel()
     
     @EnvironmentObject var authService : AuthService
-
-    
     
     
     var body : some View {
@@ -129,14 +126,12 @@ struct ArtistInfoView : View {
             Spacer()
             
             
-            
-            
             if (!lineup.contains(name)){
                 Button(action: {
                     lineup.append(name)
                     profileModel.addToLineup(artist: name)
                     profileModel.addToScore(addScore: position)
-                    //changed to addToScore
+    
                 }) {
                     Text("+ Add to lineup")
                         .fontWeight(.bold)
@@ -163,6 +158,7 @@ struct ArtistInfoView : View {
         .padding()
         .onAppear() {
             fetchLineup()
+            fetchScore()
             
             if (isLoading) {
                 connect.fetchArtist(artist: name) { result in
@@ -172,6 +168,7 @@ struct ArtistInfoView : View {
                         print("SUCCESS!")
                         self.isLoading = false
                         self.artist = fetchedArtist
+                        
                         self.formatBiography()
                         
                     case .failure(let error):
@@ -183,27 +180,6 @@ struct ArtistInfoView : View {
                 }
                 
             }
-            
-            fetchScore()
-            
-            /*
-            if(isLoading) {
-                fetchScore(currentScore: position) { result in
-                    switch result {
-                        
-                    case .success(let fetchedScore):
-                        print("SUCCESS!")
-                        self.isLoading = false
-                        self.currentScore = fetchedScore
-                        
-                    case .failure(let error):
-                        self.isLoading = false
-                        print("ERROR fetch failure: \(error)")
-                        
-                    }
-                    
-                }
-            }*/
             
         }
     }
@@ -244,6 +220,7 @@ struct ArtistInfoView : View {
                     }
                 }
             }
+        
         }
     
     private func fetchScore() {
@@ -266,3 +243,4 @@ struct ArtistInfoView : View {
     ArtistInfoView(name: "Radiohead", image: "https://e-cdns-images.dzcdn.net/images/artist/9508c1217e880b52703a525d1bd5250c/250x250-000000-80-0-0.jpg", position: 1)
         .environmentObject(AuthService())
 }
+
