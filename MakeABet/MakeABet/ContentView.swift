@@ -13,7 +13,7 @@ import FirebaseFirestore
 struct ContentView: View {
     
     @State var isLoading : Bool = true
-    @State private var currentScore : Int = 0
+    @State private var currentScore : Float = 0
     
     let db = Firestore.firestore()
     
@@ -89,7 +89,7 @@ struct ContentView: View {
     }
 
     private func fetchScore() {
-        profileModel.getScore { result in
+        profileModel.getUserScore { result in
             DispatchQueue.main.async {
                 self.isLoading = false
                 switch result {

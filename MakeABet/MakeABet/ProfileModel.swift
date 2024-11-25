@@ -112,7 +112,6 @@ class ProfileModel {
                             completion?(.failure(error))
                         } else if let document = scoreDoc, document.exists, let scoreData = document.data(), let artistScore = scoreData["score"] as? Float {
                             totalScore = totalScore + artistScore
-                            //transaction.updateData(["score": totalScore], forDocument: userDocumentRef)
                             
                             let scoreData: [String: Float] = ["score": totalScore]
                             
