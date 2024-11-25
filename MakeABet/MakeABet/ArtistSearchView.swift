@@ -13,7 +13,7 @@ import SwiftUI
  */
 struct ArtistSearchView: View {
     @State private var lineup : [String] = []
-    @State private var currentScore : Int = 0
+    @State private var currentScore : Float = 0
     @State private var isLoading : Bool = true
     var artist : Artist
     var image : String?
@@ -93,7 +93,7 @@ struct ArtistSearchView: View {
                 Button(action: {
                     lineup.append(artist.name)
                     profileModel.addToLineup(artist: artist.name)
-                    profileModel.addToScore(addScore: position)
+                    profileModel.getUserScore()
                 }) {
                     Text("+ Add to lineup")
                         .fontWeight(.bold)
@@ -139,7 +139,7 @@ struct ArtistSearchView: View {
     }
     
     private func fetchScore() {
-        profileModel.getScore { result in
+        profileModel.getUserScore() { result in
             DispatchQueue.main.async {
                 self.isLoading = false
                 switch result {

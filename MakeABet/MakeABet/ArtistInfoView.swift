@@ -17,7 +17,7 @@ struct ArtistInfoView : View {
     @State var artist : ArtistInfo? = nil
     @State var biography : String = ""
     @State private var lineup : [String] = []
-    @State private var currentScore : Int = 0
+    @State private var currentScore : Float = 0
     //@State private var biography : AttributedString?
    
     let name : String
@@ -130,7 +130,7 @@ struct ArtistInfoView : View {
                 Button(action: {
                     lineup.append(name)
                     profileModel.addToLineup(artist: name)
-                    profileModel.addToScore(addScore: position)
+                    profileModel.getUserScore()
     
                 }) {
                     Text("+ Add to lineup")
@@ -224,7 +224,7 @@ struct ArtistInfoView : View {
         }
     
     private func fetchScore() {
-        profileModel.getScore { result in
+        profileModel.getUserScore() { result in
             DispatchQueue.main.async {
                 self.isLoading = false
                 switch result {
