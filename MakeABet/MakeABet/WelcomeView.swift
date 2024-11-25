@@ -14,6 +14,7 @@ struct WelcomeView: View {
     @State private var password: String = ""
     @State private var username: String = ""
     @State private var lineup : [String : String] = ["artist1": "", "artist2" : "", "artist3" : "", "artist4" : "", "artist5" : ""]
+    @State private var score: Int = 0
     
     @EnvironmentObject var authService: AuthService
     
@@ -51,7 +52,8 @@ struct WelcomeView: View {
                     [
                         "email" : email,
                         "username" : username,
-                        "lineup" : lineup
+                        "lineup" : lineup,
+                        "score" : score
                     ],
                     merge: true)
                     

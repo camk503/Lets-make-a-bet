@@ -16,16 +16,20 @@ struct ArtistInfoView : View {
     @State var isLoading : Bool = true
     @State var artist : ArtistInfo? = nil
     @State var biography : String = ""
+    @State private var lineup : [String] = []
+    @State private var currentScore : Int = 0
     //@State private var biography : AttributedString?
-    
    
     let name : String
     let image : String?
     let position : Int
-    
+
     let db = Firestore.firestore()
     
+    private let profileModel = ProfileModel()
+    
     @EnvironmentObject var authService : AuthService
+    
     
     var body : some View {
         VStack {
@@ -121,31 +125,40 @@ struct ArtistInfoView : View {
             
             Spacer()
             
-            Button(action: {
-                
-                let ref =  db.collection("users").document(authService.email).setData(["artist1" : name])
-                
-                /*
-                do {
-                    let ref = try await db.collection("lineup").document(authService.email).setData(["artist1" : name])
-                }
-                catch {
-                    print("")
-                }
-                 */
-            }) {
-                Text("+ Add to lineup")
-                    .fontWeight(.bold)
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.borderedProminent)
-            .tint(.pink)
-            .padding(.horizontal, 20)
-            .padding(.bottom, 10)
             
+            if (!lineup.contains(name)){
+                Button(action: {
+                    lineup.append(name)
+                    profileModel.addToLineup(artist: name)
+                    profileModel.addToScore(addScore: position)
+    
+                }) {
+                    Text("+ Add to lineup")
+                        .fontWeight(.bold)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.pink)
+                .padding(.horizontal, 20)
+                .padding(.bottom, 10)
+            }
+            else{
+                Button(action: {}) {
+                    Text("Already in Your Lineup")
+                        .fontWeight(.bold)
+                        .frame(maxWidth: .infinity)
+                        .tint(.black)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.gray)
+                .padding(.horizontal, 20)
+                .padding(.bottom, 10)
+            }
         }
         .padding()
         .onAppear() {
+            fetchLineup()
+            fetchScore()
             
             if (isLoading) {
                 connect.fetchArtist(artist: name) { result in
@@ -155,6 +168,7 @@ struct ArtistInfoView : View {
                         print("SUCCESS!")
                         self.isLoading = false
                         self.artist = fetchedArtist
+                        
                         self.formatBiography()
                         
                     case .failure(let error):
@@ -163,13 +177,39 @@ struct ArtistInfoView : View {
                         
                     }
                     
-                    
                 }
-                
-                
                 
             }
             
+        }
+    }
+    
+    private func fetchLineup() {
+            profileModel.getLineup { result in
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                    switch result {
+                    case .success(let artists):
+                        self.lineup = artists
+                    case .failure(let error):
+                        print("Error loading lineup: \(error.localizedDescription)")
+                    }
+                }
+            }
+        
+        }
+    
+    private func fetchScore() {
+        profileModel.getScore { result in
+            DispatchQueue.main.async {
+                self.isLoading = false
+                switch result {
+                case .success(let score):
+                    self.currentScore = score
+                case .failure(let error):
+                    print("Error loading score: \(error.localizedDescription)")
+                }
+            }
         }
     }
     
@@ -203,3 +243,4 @@ struct ArtistInfoView : View {
     ArtistInfoView(name: "Radiohead", image: "https://e-cdns-images.dzcdn.net/images/artist/9508c1217e880b52703a525d1bd5250c/250x250-000000-80-0-0.jpg", position: 1)
         .environmentObject(AuthService())
 }
+

@@ -23,6 +23,17 @@ struct StartView: View {
     }
 }
 
+struct StartView_Previews: PreviewProvider {
+    @StateObject static var authService = AuthService()
+    
+    static var previews: some View {
+        if authService.signedIn {
+            ContentView().environmentObject(authService)
+        } else {
+            WelcomeView().environmentObject(authService)
+        }
+    }
+}
 #Preview {
     StartView().environmentObject(AuthService())
 }

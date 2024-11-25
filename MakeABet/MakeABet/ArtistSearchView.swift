@@ -12,11 +12,15 @@ import SwiftUI
  Takes in an Artist object from SearchView
  */
 struct ArtistSearchView: View {
+    @State private var lineup : [String] = []
+    @State private var currentScore : Int = 0
+    @State private var isLoading : Bool = true
     var artist : Artist
     var image : String?
     var position : Int
     
     private let DEFAULT : String = "https://lastfm.freetls.fastly.net/i/u/34s/2a96cbd8b46e442fc41c2b86b821562f.png"
+    private let profileModel = ProfileModel()
     
     var body: some View {
         VStack(alignment: .center) {
@@ -28,13 +32,13 @@ struct ArtistSearchView: View {
                         img.resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 50, height: 50)
-                    
+                        
                     },
                     placeholder: {
                         ProgressView()
                     }
                 )
-                                
+                
             } else {
                 let placeholderURL = URL(string: DEFAULT)
                 
@@ -85,21 +89,67 @@ struct ArtistSearchView: View {
                 }
             }
             
-            Button(action: {
-                print("Implement add to lineup here")
-            }) {
-                Text("+ Add to lineup")
-                    .fontWeight(.bold)
+            if (!lineup.contains(artist.name)){
+                Button(action: {
+                    lineup.append(artist.name)
+                    profileModel.addToLineup(artist: artist.name)
+                    profileModel.addToScore(addScore: position)
+                }) {
+                    Text("+ Add to lineup")
+                        .fontWeight(.bold)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.pink)
+                .padding(.horizontal, 20)
+                .padding(.bottom, 10)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(.pink)
-            .padding(.horizontal, 20)
-            .padding(.bottom, 10)
-            
-            
-            
+            else{
+                Button(action: {}) {
+                    Text("Already in Your Lineup")
+                        .fontWeight(.bold)
+                        .frame(maxWidth: .infinity)
+                        .tint(.black)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.gray)
+                .padding(.horizontal, 20)
+                .padding(.bottom, 10)
+            }
         }.padding()
             .background(Color.clear)
+            .onAppear() {
+                fetchLineup()
+                fetchScore()
+            }
+    }
+    
+    private func fetchLineup() {
+        profileModel.getLineup { result in
+            DispatchQueue.main.async {
+                self.isLoading = false
+                switch result {
+                case .success(let artists):
+                    self.lineup = artists
+                case .failure(let error):
+                    print("Error loading lineup: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    private func fetchScore() {
+        profileModel.getScore { result in
+            DispatchQueue.main.async {
+                self.isLoading = false
+                switch result {
+                case .success(let score):
+                    self.currentScore = score
+                case .failure(let error):
+                    print("Error loading score: \(error.localizedDescription)")
+                }
+            }
+        }
     }
 }
 

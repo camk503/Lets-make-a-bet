@@ -14,7 +14,12 @@ struct ProfileView : View {
     
     @State private var email: String = ""
     @State private var password: String = ""
+    @State var isLoading : Bool = true
+    @State private var currentScore : Int = 0
     @EnvironmentObject var authService: AuthService
+    
+    private let profileModel = ProfileModel()
+
     
     var body : some View {
         NavigationView() {
@@ -24,6 +29,8 @@ struct ProfileView : View {
                     Text("This is the profile")
                     
                     Text("Username: ")
+                    
+                    Text("Your Score: \(currentScore)")
                     
                     Button("Log out") {
                         print("Log out tapped!")
@@ -35,6 +42,8 @@ struct ProfileView : View {
                         }
                     }
                     
+                    
+                    
                     //Store info with Firebase
                     //https://firebase.google.com/docs/reference/swift/firebaseauth/api/reference/Classes/AdditionalUserInfo#/c:objc(cs)FIRAdditionalUserInfo(py)newUser
                     //Adding Firebase to Project
@@ -42,6 +51,20 @@ struct ProfileView : View {
                     
                 }.navigationTitle("Profile")
                    
+            }
+        }
+    }
+    
+    private func fetchScore() {
+        profileModel.getScore { result in
+            DispatchQueue.main.async {
+                self.isLoading = false
+                switch result {
+                case .success(let score):
+                    self.currentScore = score
+                case .failure(let error):
+                    print("Error loading score: \(error.localizedDescription)")
+                }
             }
         }
     }
