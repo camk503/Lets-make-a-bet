@@ -15,7 +15,7 @@ struct ProfileView : View {
     @State private var email: String = ""
     @State private var password: String = ""
     @State var isLoading : Bool = true
-    @State private var currentScore : Int = 0
+    @State private var currentScore : Float = 0
     @EnvironmentObject var authService: AuthService
     
     private let profileModel = ProfileModel()
@@ -52,11 +52,13 @@ struct ProfileView : View {
                 }.navigationTitle("Profile")
                    
             }
+        }.onAppear() {
+            fetchScore()
         }
     }
     
     private func fetchScore() {
-        profileModel.getScore { result in
+        profileModel.getUserScore { result in
             DispatchQueue.main.async {
                 self.isLoading = false
                 switch result {
