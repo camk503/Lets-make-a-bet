@@ -31,6 +31,8 @@ class LastAPI : ObservableObject {
         self.topArtists = []
         self.allArtists = []
         self.images = [:]
+        
+        self.loadData(limit: 999)
     }
     /**
         This function gets the current top artists for the week from Last.fm's API

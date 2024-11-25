@@ -9,7 +9,7 @@ import SwiftUI
 
 struct LineupView: View {
     @State private var lineup: [String] = []
-    @State private var currentScore: Int = 0
+    @State private var currentScore: Float = 0
     @State private var isLoading: Bool = true
     @State private var errorMessage: String?
     
@@ -17,43 +17,54 @@ struct LineupView: View {
     @State var artist : ArtistInfo? = nil
 
     let profileModel = ProfileModel()
+    @EnvironmentObject var manager : FirebaseManager
     
 
     var body: some View {
-        VStack {
-            Text("My Lineup")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .padding(.top)
-
-            if isLoading {
-                ProgressView("Loading lineup...")
-                    .padding()
-            } else if let errorMessage = errorMessage {
-                Text(errorMessage)
-                    .foregroundColor(.red)
-                    .padding()
-            } else if lineup.isEmpty {
-                Text("Your lineup is empty!")
-                    .font(.title2)
-                    .foregroundColor(.gray)
-                    .padding()
-            } else {
-                ScrollView {
-                    VStack(spacing: 16) {
-                        ForEach(lineup.indices, id: \.self) { index in
-                            LineupCardView(artistName: lineup[index], position: index + 1)
+        ZStack() {
+            Color.gray.opacity(0.1).ignoresSafeArea()
+            
+            VStack {
+                Text("My Lineup")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .padding(.top)
+                    .foregroundColor(.pink)
+                
+                if isLoading {
+                    ProgressView("Loading lineup...")
+                        .padding()
+                } else if let errorMessage = errorMessage {
+                    Text(errorMessage)
+                        .foregroundColor(.red)
+                        .padding()
+                } else if lineup.isEmpty {
+                    Text("Your lineup is empty!")
+                        .font(.title2)
+                        .foregroundColor(.gray)
+                        .padding()
+                    Text("Go to the charts page to start adding artists!")
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                        .fontWeight(.semibold)
+                        .padding()
+                } else {
+                    ScrollView {
+                        VStack(spacing: 16) {
+                            ForEach(lineup.indices, id: \.self) { index in
+                                LineupCardView(artistName: lineup[index], position: index + 1)
+                            }
                         }
+                        .padding()
                     }
-                    .padding()
                 }
             }
+            .onAppear {
+                fetchLineup()
+                fetchScore()
+            }
+            .padding()
         }
-        .onAppear {
-            fetchLineup()
-            fetchScore()
-        }
-        .padding()
     }
 
     private func fetchLineup() {
@@ -71,7 +82,7 @@ struct LineupView: View {
     }
     
     private func fetchScore() {
-        profileModel.getScore { result in
+        profileModel.getUserScore { result in
             DispatchQueue.main.async {
                 isLoading = false
                 switch result {
@@ -96,9 +107,9 @@ struct LineupCardView: View {
                 .font(.title)
                 .fontWeight(.bold)
                 .frame(width: 40, height: 40)
-                .background(Color.blue.opacity(0.2))
+                .background(Color.pink.opacity(0.2))
                 .cornerRadius(20)
-                .overlay(Circle().stroke(Color.blue, lineWidth: 2))
+                .overlay(Circle().stroke(Color.pink, lineWidth: 2))
 
             Text(artistName)
                 .font(.headline)

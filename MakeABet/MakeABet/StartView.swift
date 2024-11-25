@@ -18,11 +18,12 @@ struct StartView: View {
                 ContentView().environmentObject(LastAPI())
                     .environmentObject(FirebaseManager())
             } else {
-                WelcomeView()
+                WelcomeView().environmentObject(AuthService())
             }
     }
 }
 
+/*
 struct StartView_Previews: PreviewProvider {
     @StateObject static var authService = AuthService()
     
@@ -33,7 +34,8 @@ struct StartView_Previews: PreviewProvider {
             WelcomeView().environmentObject(authService)
         }
     }
-}
+}*/
+
 #Preview {
     StartView().environmentObject(AuthService())
 }

@@ -30,7 +30,7 @@ struct ProfileView : View {
                     
                     Text("Username: ")
                     
-                    Text("Your Score: \(currentScore)")
+                    Text("Your Score: \(String(format: "%.0f", currentScore))")
                     
                     Button("Log out") {
                         print("Log out tapped!")

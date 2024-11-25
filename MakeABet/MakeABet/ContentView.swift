@@ -31,7 +31,7 @@ struct ContentView: View {
                 
                 Spacer()
                 
-                Text(" Score: \(currentScore)")
+                Text(" Score: \(String(format: "%.0f", currentScore))")
                     .fontWeight(.bold)
                     .padding(4)
                     .background(.pink)

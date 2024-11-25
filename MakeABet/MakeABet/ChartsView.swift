@@ -98,11 +98,8 @@ struct ChartsView: View {
                 }
                 .padding()
                 .onAppear() {
-                    // connect.isLoading = true
-                    connect.loadData(limit: 50)
-                    /*if !connect.topArtists.isEmpty {
-                     connect.isLoading = false
-                     }*/
+                    
+                    //connect.loadData(limit: 50)
                 }
                 
             }//.navigationTitle("Charts")

@@ -109,7 +109,7 @@ struct SearchView : View {
             }
         }
         .onAppear() {
-            connect.loadData(limit: 999)
+            //connect.loadData(limit: 999)
         }
     }
     
