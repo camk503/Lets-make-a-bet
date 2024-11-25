@@ -23,7 +23,7 @@ struct ArtistInfoView : View {
     let name : String
     let image : String?
     let position : Int
-    
+
     let db = Firestore.firestore()
     
     private let profileModel = ProfileModel()
@@ -184,30 +184,6 @@ struct ArtistInfoView : View {
         }
     }
     
-    /**
-        Last.fm artist biographies contain an href that doesn't register here as a link
-        This function removes that link completely from the biography
-     */
-    private func formatBiography() {
-        if let artist = artist {
-            let summary = artist.bio.summary
-            
-            // Check if html in bio
-            if summary.contains("<a") {
-                if let range = summary.range(of: " <a") {
-                    // Store portion before the link
-                    let chopped = summary[...range.lowerBound]
-                    self.biography = String(chopped)
-                }
-                
-            } else {
-                self.biography = summary
-            }
-
-        }
-        
-    }
-    
     private func fetchLineup() {
             profileModel.getLineup { result in
                 DispatchQueue.main.async {
@@ -235,6 +211,30 @@ struct ArtistInfoView : View {
                 }
             }
         }
+    }
+    
+    /**
+        Last.fm artist biographies contain an href that doesn't register here as a link
+        This function removes that link completely from the biography
+     */
+    private func formatBiography() {
+        if let artist = artist {
+            let summary = artist.bio.summary
+            
+            // Check if html in bio
+            if summary.contains("<a") {
+                if let range = summary.range(of: " <a") {
+                    // Store portion before the link
+                    let chopped = summary[...range.lowerBound]
+                    self.biography = String(chopped)
+                }
+                
+            } else {
+                self.biography = summary
+            }
+
+        }
+        
     }
     
 }
