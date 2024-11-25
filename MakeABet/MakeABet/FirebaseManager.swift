@@ -84,8 +84,7 @@ class FirebaseManager : ObservableObject {
                         let lastPosition = document.get("lastPosition") as! Int
                         let score = document.get("score") as! Float
                         
-                        let collectionRef = self.db.collection("charts")
-                        collectionRef.getDocuments { (querySnapshot, error) in
+                        self.db.collection("charts").getDocuments { (querySnapshot, error) in
                             if let error = error
                             {
                                 print("Error getting documents from charts: \(error)")
@@ -112,11 +111,24 @@ class FirebaseManager : ObservableObject {
                                                     let position = artistIndex + 1
                                                     let scoreAddition = self.calculateArtistScore(position: position, lastPosition: lastPosition)
                                                     let newScore = score + scoreAddition
-                                                    docRef.setData([
-                                                        "score": newScore,
-                                                        "lastPosition": position,
-                                                        "lastUpdated": newDoc.documentID
-                                                    ])
+                                                    Task
+                                                    {
+                                                        do
+                                                        {
+                                                            try await docRef.setData([
+                                                                "score": newScore,
+                                                                "lastPosition": position,
+                                                                "lastUpdated": newDoc.documentID
+                                                            ],
+                                                            merge: true)
+                                                                
+                                                        }
+                                                        catch
+                                                        {
+                                                            print ("caught update document")
+                                                        }
+                                                    }
+                                                    
                                                 }
                                                 else
                                                 {
@@ -131,7 +143,61 @@ class FirebaseManager : ObservableObject {
                     }
                     else
                     {
-                        print("No document found for \(artist.name)")
+                        self.db.collection("charts").getDocuments { (querySnapshot, error) in
+                            if let error = error
+                            {
+                                print("Error getting documents from charts: \(error)")
+                            }
+                            else
+                            {
+                                let documents = querySnapshot!.documents
+                                let initDoc = documents[5]
+                                let artistNames = initDoc.get("artistNames") as! [String]
+                                if let artistIndex = artistNames.firstIndex(of: artist.name)
+                                {
+                                    let position = artistIndex + 1
+                                    let score = self.calculateArtistScore(position: position, lastPosition: 50)
+                                    Task
+                                    {
+                                        do
+                                        {
+                                            try await docRef.setData([
+                                                "score": score,
+                                                "lastPosition": position,
+                                                "lastUpdated": initDoc.documentID
+                                            ],
+                                            merge: true)
+                                                
+                                        }
+                                        catch
+                                        {
+                                            print ("caught create document")
+                                        }
+                                    }
+                                    
+                                }
+                                else
+                                {
+                                    Task
+                                    {
+                                        do
+                                        {
+                                            try await docRef.setData([
+                                                "score": 0.0,
+                                                "lastPosition": 50,
+                                                "lastUpdated": initDoc.documentID
+                                            ],
+                                            merge: true)
+                                                
+                                        }
+                                        catch
+                                        {
+                                            print ("caught create document")
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
