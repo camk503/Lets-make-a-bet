@@ -32,6 +32,6 @@ struct LeaderboardView : View {
         }
     }
 }
-#Preview() {
+#Preview {
     LeaderboardView()
 }

@@ -37,7 +37,7 @@ struct ContentView: View {
             
             TabView() {
                 // Home View
-                HomeView()
+                LineupView()
                     .tabItem() {
                         Label("Home", systemImage: "house")
                     }
