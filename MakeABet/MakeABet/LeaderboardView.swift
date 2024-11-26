@@ -13,16 +13,21 @@ struct LeaderboardView : View {
     @State var isLoading : Bool = true
     @State var lineup : [String] = []
     @State var userDict : [String: Float] = [:]
+    @State var sortedDict : [String: Float] = [:]
     @State private var errorMessage: String?
+    //@State var count : Int = 0
     
     private let profileModel = ProfileModel()
     
     var body : some View {
         VStack {
+            //Color.gray.opacity(0.1).ignoresSafeArea()
+
             Text("Leaderboard")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .padding(.top)
+                .foregroundColor(.pink)
             
             if isLoading {
                 ProgressView("Loading leaderboard...")
@@ -39,8 +44,9 @@ struct LeaderboardView : View {
             } else {
                 ScrollView {
                     VStack(spacing: 16) {
-                        ForEach(Array(userDict.keys),id:\.self) { user in
-                                LeaderboardCardView(username: user, score: userDict[user] ?? 0)
+                        ForEach(Array(userDict.keys.enumerated()),id:\.element) { index, user in
+                            LeaderboardCardView(username: user, score: userDict[user] ?? 0, index: index + 1)
+
                         }
                     }
                     .padding()
@@ -75,16 +81,22 @@ struct LeaderboardView : View {
 struct LeaderboardCardView: View {
     let username: String
     let score: Float
+    let index: Int
 
     var body: some View {
         HStack {
+            Text("\(index)")
+                .font(.title)
+                .fontWeight(.bold)
+                .frame(width: 40, height: 40)
+                .background(Color.pink.opacity(0.2))
+                .cornerRadius(20)
+                .overlay(Circle().stroke(Color.pink, lineWidth: 2))
+            
             Text(username)
                 .font(.title)
                 .fontWeight(.bold)
-                //.frame(width: 40, height: 40)
-                //.background(Color.blue.opacity(0.2))
-                //.cornerRadius(20)
-                //.overlay(Circle().stroke(Color.blue, lineWidth: 2))
+                .padding(.leading, 10)
 
             Text("\(score.formatted())")
                 .font(.headline)
