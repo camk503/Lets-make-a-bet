@@ -139,6 +139,32 @@ class ProfileModel {
         
     }
     
+    func getTopUsers(completion: ((Result< Dictionary<String, Float>, Error>) -> Void)? = nil) {
+        var userDict: [String: Float] = [:]
+        //for user in users database
+        var username : String = ""
+        var score : Float = 0
+        
+        db.collection("users").whereField ("score", isNotEqualTo: false).getDocuments() {(querySnapshot, error) in
+            if let error = error{
+                completion?(.failure(error))
+            } else {
+                for document in querySnapshot!.documents {
+                    username = document.get("username") as! String
+                    score = document.get("score") as! Float
+                    userDict.updateValue(score, forKey: username)
+                    //userDict.updateValue(score, forKey: username)
+                }
+                completion?(.success(userDict))
+
+            }
+        }
+        //sort userDict largest to smallest
+        //userDict = userDict.sorted(by: { $0.value > $1.value})
+        //completion?(.success(userDict))
+
+    }
+    
 }
 
 
