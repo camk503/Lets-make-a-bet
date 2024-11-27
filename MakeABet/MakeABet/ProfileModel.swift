@@ -12,8 +12,24 @@ import FirebaseFirestore
 
 let MAX_NUM_ARTISTS = 10
 
-class ProfileModel {
+class ProfileModel : ObservableObject {
     private let db = Firestore.firestore()
+
+    // Variables to hold user score and lineup
+    // Can be seen by all views
+    @Published var isLoading : Bool
+    @Published var currentScore : Float
+    @Published var lineup : [String]
+    
+    init() {
+        self.isLoading = true
+        self.currentScore = 0
+        self.lineup = []
+        
+        self.fetchScore()
+        self.fetchLineup()
+    }
+    
     
     func setLineup(artists: [String], completion: ((Result<Void, Error>) -> Void)? = nil) {
         guard let userEmail = Auth.auth().currentUser?.email else {
@@ -93,25 +109,6 @@ class ProfileModel {
     }
     
     
-    func getUsername(completion: ((Result< String, Error>) -> Void)? = nil) {
-        guard let userEmail = Auth.auth().currentUser?.email else {
-            completion?(.failure(NSError(domain: "ProfileModel", code: 401, userInfo: [NSLocalizedDescriptionKey: "User not authenticated"])))
-            return
-        }
-        
-        db.collection("users").document(userEmail).getDocument { document, error in
-            if let error = error {
-                completion?(.failure(error))
-            } else if let document = document, document.exists, let data = document.data(), let username = data["username"] as? String{
-                completion?(.success(username))
-            } else {
-                completion?(.success(""))
-            }
-        }
-        
-        
-    }
-    
     func getUserScore(completion: ((Result< Float, Error>) -> Void)? = nil) {
         guard let userEmail = Auth.auth().currentUser?.email else {
             completion?(.failure(NSError(domain: "ProfileModel", code: 401, userInfo: [NSLocalizedDescriptionKey: "User not authenticated"])))
@@ -182,6 +179,40 @@ class ProfileModel {
         //userDict = userDict.sorted(by: { $0.value > $1.value})
         //completion?(.success(userDict))
 
+    }
+    
+    // Function to avoid duplicate code
+    // Gets user score
+    func fetchScore() {
+        getUserScore() { result in
+            DispatchQueue.main.async {
+                self.isLoading = true
+                switch result {
+                case .success(let score):
+                    self.currentScore = score
+                    self.isLoading = false
+                case .failure(let error):
+                    print("Error loading score: \(error.localizedDescription)")
+                    self.isLoading = false
+                }
+            }
+        }
+    }
+    func fetchLineup() {
+        getLineup() { result in
+            DispatchQueue.main.async {
+                self.isLoading = true
+                switch result {
+                case .success(let artists):
+                    self.lineup = artists
+                    self.isLoading = false
+                case .failure(let error):
+                    print("Error loading lineup: \(error.localizedDescription)")
+                    self.isLoading = false
+                }
+            }
+        }
+    
     }
     
 }

@@ -14,25 +14,38 @@ struct ProfileView : View {
     
     @State private var email: String = ""
     @State private var password: String = ""
-    @State var isLoading : Bool = true
-    @State private var currentScore : Float = 0
-    @State private var username : String = ""
-    @EnvironmentObject var authService: AuthService
     
-    private let profileModel = ProfileModel()
+    @EnvironmentObject var authService: AuthService
+    @EnvironmentObject var profileModel : ProfileModel
 
     
     var body : some View
     {
-        NavigationView() {
             ZStack {
                 Color.gray.opacity(0.1).ignoresSafeArea()
+               
                 VStack {
-                    Text("This is the profile")
+                    Text("Profile")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .padding(.top)
+                        .foregroundColor(.pink)
                     
-                    Text("Username: \(username)")
+                    SwiftUI.Image(systemName: "person.circle")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 100, height: 100)
+                        .foregroundColor(.gray)
                     
-                    Text("Your Score: \(String(format: "%.0f", currentScore))")
+                    // Display username
+                    Text("\(authService.username.isEmpty ? "Loading username..." : authService.username)")
+                        .fontWeight(.semibold)
+                        .font(.system(size: 20))
+                        .foregroundColor(.pink)
+                    
+                    Text("Your Score: \(String(format: "%.0f", profileModel.currentScore))")
+                        .fontWeight(.semibold)
+                        .font(.subheadline)
                     
                     Button("Log out") {
                         print("Log out tapped!")
@@ -45,7 +58,6 @@ struct ProfileView : View {
                     }
                     
                     
-                    
                     //Store info with Firebase
                     //https://firebase.google.com/docs/reference/swift/firebaseauth/api/reference/Classes/AdditionalUserInfo#/c:objc(cs)FIRAdditionalUserInfo(py)newUser
                     //Adding Firebase to Project
@@ -54,40 +66,13 @@ struct ProfileView : View {
                 }.navigationTitle("Profile")
                    
             }
-        }.onAppear() {
-            fetchScore()
-            fetchUsername()
-        }
-    }
-    
-    private func fetchScore() {
-        profileModel.getUserScore { result in
-            DispatchQueue.main.async {
-                self.isLoading = false
-                switch result {
-                case .success(let score):
-                    self.currentScore = score
-                case .failure(let error):
-                    print("Error loading score: \(error.localizedDescription)")
-                }
+            .onAppear() {
+                profileModel.fetchScore()
             }
-        }
     }
-    
-    private func fetchUsername() {
-        profileModel.getUsername() { result in
-            DispatchQueue.main.async {
-                self.isLoading = false
-                switch result {
-                case .success(let username):
-                    self.username = username
-                case .failure(let error):
-                    print("Error loading username: \(error.localizedDescription)")
-                }
-            }
-        }
-    }}
+}
 
 #Preview {
-    ProfileView()
+    ProfileView().environmentObject(AuthService())
+        .environmentObject(ProfileModel())
 }
