@@ -177,37 +177,6 @@ struct ArtistInfoView : View {
         }
     }
     
-    /*
-    private func fetchLineup() {
-            profileModel.getLineup { result in
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                    switch result {
-                    case .success(let artists):
-                        self.lineup = artists
-                    case .failure(let error):
-                        print("Error loading lineup: \(error.localizedDescription)")
-                    }
-                }
-            }
-        
-        }*/
-    
-    /*
-    private func fetchScore() {
-        profileModel.getUserScore() { result in
-            DispatchQueue.main.async {
-                self.isLoading = false
-                switch result {
-                case .success(let score):
-                    self.currentScore = score
-                case .failure(let error):
-                    print("Error loading score: \(error.localizedDescription)")
-                }
-            }
-        }
-    }*/
-    
     /**
         Last.fm artist biographies contain an href that doesn't register here as a link
         This function removes that link completely from the biography
