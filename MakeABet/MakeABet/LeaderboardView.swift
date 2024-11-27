@@ -44,8 +44,10 @@ struct LeaderboardView : View {
             } else {
                 ScrollView {
                     VStack(spacing: 16) {
-                        ForEach(Array(userDict.keys.enumerated()),id:\.element) { index, user in
-                            LeaderboardCardView(username: user, score: userDict[user] ?? 0, index: index + 1)
+                        //Sort the tuple on user's score first, and username if score is tied
+                        let userTupleArray = userDict.sorted{($0.value, $1.key) > ($1.value, $0.key)}
+                        ForEach(Array(userTupleArray.enumerated()), id:\.0) { index, item in
+                            LeaderboardCardView(username: item.key, score: item.value, index: index + 1)
 
                         }
                     }
@@ -116,4 +118,23 @@ struct LeaderboardCardView: View {
 #Preview() {
     LeaderboardView()
 }
+//
+//  LeaderboardView.swift
+//  MakeABet
+//
+//  Created by Hannah Sheridan on 11/12/24.
+//
 
+
+/*
+ NavigationView() {
+     ZStack {
+         
+         Color.gray.opacity(0.1).ignoresSafeArea()
+         
+         VStack {
+             Text("Leaderboard")
+                 .font(.largeTitle)
+         }//.navigationTitle("Leaderboard")
+     }
+ */

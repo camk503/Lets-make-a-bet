@@ -27,6 +27,8 @@ struct ChartsView: View {
                     if connect.isLoading {
                         ProgressView("Loading top artists...")
                             .progressViewStyle(CircularProgressViewStyle(tint: .pink))
+                            //.padding(.top, 50)
+                            .background(Color.white.opacity(0.95))
                     }
                     else {
                         
@@ -99,6 +101,7 @@ struct ChartsView: View {
                 .onAppear() {
                     
                     //connect.loadData(limit: 50)
+                    manager.updateArtistScores(topArtists: connect.topArtists)
                 }
                 
             }//.navigationTitle("Charts")
