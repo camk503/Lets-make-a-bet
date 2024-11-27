@@ -22,7 +22,7 @@ struct LeaderboardView : View {
     var body : some View {
         VStack {
             //Color.gray.opacity(0.1).ignoresSafeArea()
-
+            
             Text("Leaderboard")
                 .font(.largeTitle)
                 .fontWeight(.bold)
@@ -42,38 +42,40 @@ struct LeaderboardView : View {
                     .foregroundColor(.gray)
                     .padding()
             } else {
+                
+                // Sort the tuple on user's score first, and username if score is tied
+                let userTupleArray = userDict.sorted{($0.value, $1.key) > ($1.value, $0.key)}
+                
                 ScrollView {
                     VStack(spacing: 16) {
-                        ForEach(Array(userDict.keys.enumerated()),id:\.element) { index, user in
-                            LeaderboardCardView(username: user, score: userDict[user] ?? 0, index: index + 1)
-
+                        ForEach(Array(userTupleArray.enumerated()), id:\.0) { index, item in
+                            LeaderboardCardView(username: item.key, score: item.value, index: index + 1)
                         }
+                        .padding()
                     }
-                    .padding()
                 }
             }
-        }
-        .onAppear(){
+
+        }.onAppear(){
             fetchTopUsers()
         }
         .padding()
     }
     
-    
-    private func fetchTopUsers() {
+    func fetchTopUsers() {
         profileModel.getTopUsers() { result in
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                    switch result {
-                    case .success(let userdict):
-                        self.userDict = userdict
-                        
-                    case .failure(let error):
-                        print("Error loading lineup: \(error.localizedDescription)")
-                    }
+            DispatchQueue.main.async {
+                self.isLoading = false
+                switch result {
+                case .success(let userdict):
+                    self.userDict = userdict
+                    
+                case .failure(let error):
+                    print("Error loading lineup: \(error.localizedDescription)")
                 }
             }
         }
+    }
 }
 
 
