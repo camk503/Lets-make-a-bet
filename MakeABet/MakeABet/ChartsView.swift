@@ -33,6 +33,7 @@ struct ChartsView: View {
                     else {
                         
                         if !connect.topArtists.isEmpty {
+                            let _ = manager.updateArtistScores(topArtists: connect.topArtists)
                             ScrollView {
                                 // Heading
                                 Text("Global Top 50")
@@ -47,17 +48,17 @@ struct ChartsView: View {
                                         
                                         // Some artists dont have an mbid, use index
                                         let artist = connect.topArtists[index]
-                                        
+
                                         // Get movement of artist on chart
                                         let movement = manager.updateMovement(for: artist.name, at: index)
+                                        
                                         
                                         // Print artist info to page
                                         ArtistView (
                                             artist: artist,
                                             image: connect.images[artist.name],
                                             position: index + 1,
-                                            movement: movement
-                                        )
+                                            movement: movement)
                                         .buttonStyle(PlainButtonStyle())
                                         .onAppear() {
                                             if connect.images[artist.name] == nil {
