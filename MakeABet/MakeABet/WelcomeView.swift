@@ -25,7 +25,7 @@ struct WelcomeView: View {
     func signIn() {
         Task {
             do {
-                try await authService.regularCreateAccount(email: email, password: password)
+                try await authService.regularCreateAccount(email: email, password: password, username: username)
             }
             catch {
                 print ("catched failed signin ")
@@ -36,7 +36,7 @@ struct WelcomeView: View {
     func createAccount() {
         Task {
             do {
-                try await authService.regularCreateAccount(email: email, password: password)
+                try await authService.regularCreateAccount(email: email, password: password, username: username)
                 
             }
             catch {
@@ -63,7 +63,7 @@ struct WelcomeView: View {
             }
         }
     }
-    
+
     var body: some View {
         NavigationView {
             ZStack {
@@ -135,7 +135,6 @@ struct WelcomeView: View {
                     
                     Button("Create Account") {
                         createAccount()
-                        createUserDocument()
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)

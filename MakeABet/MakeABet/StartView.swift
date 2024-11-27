@@ -8,7 +8,6 @@
 import SwiftUI
 import FirebaseCore
 import FirebaseAuth
-//import FirebaseAuth
 
 struct StartView: View {
     @EnvironmentObject var authService: AuthService

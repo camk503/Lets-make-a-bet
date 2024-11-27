@@ -7,9 +7,9 @@
 
 import SwiftUI
 import FirebaseCore
+import FirebaseFirestore
 
 struct ProfileView : View {
-    var username : String = ""
     var preferNotifications = true
     
     @State private var email: String = ""
@@ -21,14 +21,15 @@ struct ProfileView : View {
     private let profileModel = ProfileModel()
 
     
-    var body : some View {
+    var body : some View
+    {
         NavigationView() {
             ZStack {
                 Color.gray.opacity(0.1).ignoresSafeArea()
                 VStack {
                     Text("This is the profile")
                     
-                    Text("Username: ")
+                    Text("Username: \(authService.username)")
                     
                     Text("Your Score: \(String(format: "%.0f", currentScore))")
                     
