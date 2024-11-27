@@ -17,7 +17,6 @@ struct LoginView: View {
     //@State var passError : String = ""
     
     var body: some View {
-        //NavigationView {
             ZStack {
                 Color.gray.opacity(0.1)
                     .ignoresSafeArea()
@@ -113,7 +112,6 @@ struct LoginView: View {
                 .padding(.horizontal, 30)
                 
             }.navigationBarBackButtonHidden(true)
-        //}
     }
 }
 

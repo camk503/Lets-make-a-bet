@@ -8,15 +8,15 @@
 import SwiftUI
 
 struct LineupView: View {
-    @State private var lineup: [String] = []
-    @State private var currentScore: Float = 0
-    @State private var isLoading: Bool = true
+    // @State private var lineup: [String] = []
+    // @State private var currentScore: Float = 0
+    // @State private var isLoading: Bool = true
     @State private var errorMessage: String?
     
     @State var connect : LastAPI = LastAPI()
     @State var artist : ArtistInfo? = nil
 
-    let profileModel = ProfileModel()
+    @EnvironmentObject var profileModel : ProfileModel
     @EnvironmentObject var manager : FirebaseManager
     
 
@@ -31,14 +31,15 @@ struct LineupView: View {
                     .padding(.top)
                     .foregroundColor(.pink)
                 
-                if isLoading {
+                if profileModel.isLoading {
                     ProgressView("Loading lineup...")
+                        .progressViewStyle(CircularProgressViewStyle(tint: .pink))
                         .padding()
                 } else if let errorMessage = errorMessage {
                     Text(errorMessage)
                         .foregroundColor(.red)
                         .padding()
-                } else if lineup.isEmpty {
+                } else if profileModel.lineup.isEmpty {
                     Text("Your lineup is empty!")
                         .font(.title2)
                         .foregroundColor(.gray)
@@ -51,8 +52,8 @@ struct LineupView: View {
                 } else {
                     ScrollView {
                         VStack(spacing: 16) {
-                            ForEach(lineup.indices, id: \.self) { index in
-                                LineupCardView(artistName: lineup[index], position: index + 1)
+                            ForEach(profileModel.lineup.indices, id: \.self) { index in
+                                LineupCardView(artistName: profileModel.lineup[index], position: index + 1)
                             }
                         }
                         .padding()
@@ -60,40 +61,12 @@ struct LineupView: View {
                 }
             }
             .onAppear {
-                fetchLineup()
-                fetchScore()
+                profileModel.fetchScore()
             }
             .padding()
         }
     }
 
-    private func fetchLineup() {
-        profileModel.getLineup { result in
-            DispatchQueue.main.async {
-                isLoading = false
-                switch result {
-                case .success(let artists):
-                    lineup = artists
-                case .failure(let error):
-                    errorMessage = "Failed to load lineup: \(error.localizedDescription)"
-                }
-            }
-        }
-    }
-    
-    private func fetchScore() {
-        profileModel.getUserScore { result in
-            DispatchQueue.main.async {
-                isLoading = false
-                switch result {
-                case .success(let score):
-                    currentScore = score
-                case .failure(let error):
-                    errorMessage = "Failed to load score: \(error.localizedDescription)"
-                }
-            }
-        }
-    }
 }
 
 
@@ -124,5 +97,5 @@ struct LineupCardView: View {
     }
 }
 #Preview {
-    LineupView()
+    LineupView().environmentObject(ProfileModel())
 }

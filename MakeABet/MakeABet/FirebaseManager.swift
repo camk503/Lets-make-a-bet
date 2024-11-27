@@ -48,8 +48,6 @@ class FirebaseManager : ObservableObject {
      Function checks past index of artist against current index to see if they moved up, down, or stayed in the same place
      */
     func updateMovement(for artistName: String, at currIndex: Int) -> String {
-        //print("giving it \(artistName)")
-        //updateArtistScores(for: artistName)
         if let pastIndex = pastChart.firstIndex(of: artistName) {
             if (pastIndex > currIndex) {
                 return "up"
@@ -60,7 +58,7 @@ class FirebaseManager : ObservableObject {
             }
         } else {
             // Couldn't find index on past chart
-            // This means artist recently made it on chart, meaning they went up
+            // This means artist recently made it on chart
             return "up"
         }
         
@@ -71,7 +69,7 @@ class FirebaseManager : ObservableObject {
         topArtists.forEach { artist in
             let docRef = db.collection("scores").document(artist.name)
                 docRef.getDocument { (document, error) in
-                if let error = error
+                if let _ = error
                 {
                     print("Error getting document for \(artist.name)")
                 }

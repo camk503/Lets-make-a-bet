@@ -16,9 +16,6 @@ struct ArtistInfoView : View {
     @State var isLoading : Bool = true
     @State var artist : ArtistInfo? = nil
     @State var biography : String = ""
-    @State private var lineup : [String] = []
-    @State private var currentScore : Float = 0
-    //@State private var biography : AttributedString?
    
     let name : String
     let image : String?
@@ -26,8 +23,7 @@ struct ArtistInfoView : View {
 
     let db = Firestore.firestore()
     
-    private let profileModel = ProfileModel()
-    
+    @EnvironmentObject var profileModel : ProfileModel
     @EnvironmentObject var authService : AuthService
     
     
@@ -125,10 +121,9 @@ struct ArtistInfoView : View {
             
             Spacer()
             
-            
-            if (!lineup.contains(name)){
+            if (!profileModel.lineup.contains(name)){
                 Button(action: {
-                    lineup.append(name)
+                    profileModel.lineup.append(name)
                     profileModel.addToLineup(artist: name)
                     profileModel.getUserScore()
     
@@ -157,9 +152,7 @@ struct ArtistInfoView : View {
         }
         .padding()
         .onAppear() {
-            fetchLineup()
-            fetchScore()
-            
+            profileModel.fetchScore()
             if (isLoading) {
                 connect.fetchArtist(artist: name) { result in
                     switch result {
@@ -184,6 +177,7 @@ struct ArtistInfoView : View {
         }
     }
     
+    /*
     private func fetchLineup() {
             profileModel.getLineup { result in
                 DispatchQueue.main.async {
@@ -197,8 +191,9 @@ struct ArtistInfoView : View {
                 }
             }
         
-        }
+        }*/
     
+    /*
     private func fetchScore() {
         profileModel.getUserScore() { result in
             DispatchQueue.main.async {
@@ -211,7 +206,7 @@ struct ArtistInfoView : View {
                 }
             }
         }
-    }
+    }*/
     
     /**
         Last.fm artist biographies contain an href that doesn't register here as a link
@@ -242,5 +237,6 @@ struct ArtistInfoView : View {
 #Preview {
     ArtistInfoView(name: "Radiohead", image: "https://e-cdns-images.dzcdn.net/images/artist/9508c1217e880b52703a525d1bd5250c/250x250-000000-80-0-0.jpg", position: 1)
         .environmentObject(AuthService())
+        .environmentObject(ProfileModel())
 }
 

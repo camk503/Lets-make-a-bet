@@ -35,7 +35,6 @@ struct SearchView : View {
                         if (connect.isLoading) {
                             ProgressView("Loading all artists...")
                                 .progressViewStyle(CircularProgressViewStyle(tint: .pink))
-                                .background(Color.white.opacity(0.95))
                         } else {
                             // Print current top artists
                             if !connect.topArtists.isEmpty || !connect.allArtists.isEmpty {
@@ -108,9 +107,7 @@ struct SearchView : View {
                 }
             }
         }
-        .onAppear() {
-            //connect.loadData(limit: 999)
-        }
+
     }
     
 }

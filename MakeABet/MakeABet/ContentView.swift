@@ -11,13 +11,9 @@ import FirebaseFirestore
 
 // Navigate between screens
 struct ContentView: View {
-    
-    @State var isLoading : Bool = true
-    @State private var currentScore : Float = 0
-    
     let db = Firestore.firestore()
     
-    private let profileModel = ProfileModel()
+    @EnvironmentObject var profileModel : ProfileModel
     
     var body: some View {
         VStack(spacing: 0) {
@@ -31,7 +27,7 @@ struct ContentView: View {
                 
                 Spacer()
                 
-                Text(" Score: \(String(format: "%.0f", currentScore))")
+                Text(" Score: \(String(format: "%.0f", profileModel.currentScore))")
                     .fontWeight(.bold)
                     .padding(4)
                     .background(.pink)
@@ -43,7 +39,7 @@ struct ContentView: View {
                 
             }.background(.gray.opacity(0.1))
             
-            
+
             Divider()
             
             
@@ -83,31 +79,25 @@ struct ContentView: View {
                 .ignoresSafeArea(edges: .bottom)
             
         }.onAppear() {
-            fetchScore()
-        }
-        
-    }
-
-    private func fetchScore() {
-        profileModel.getUserScore { result in
-            DispatchQueue.main.async {
-                self.isLoading = false
-                switch result {
-                case .success(let score):
-                    self.currentScore = score
-                case .failure(let error):
-                    print("Error loading score: \(error.localizedDescription)")
-                }
-            }
+            profileModel.fetchScore()
         }
     }
 }
 
+/*
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
             //.environmentObject(AuthService())
             .environmentObject(LastAPI())
             .environmentObject(FirebaseManager())
+            .environmentObject(ProfileModel())
     }
+}*/
+#Preview {
+    ContentView()
+        .environmentObject(AuthService())
+        .environmentObject(LastAPI())
+        .environmentObject(FirebaseManager())
+        .environmentObject(ProfileModel())
 }

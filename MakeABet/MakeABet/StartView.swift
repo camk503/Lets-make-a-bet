@@ -14,26 +14,15 @@ struct StartView: View {
     
     var body: some View {
             if authService.signedIn {
-                ContentView().environmentObject(LastAPI())
+                ContentView().environmentObject(AuthService())
+                    .environmentObject(LastAPI())
                     .environmentObject(FirebaseManager())
+                    .environmentObject(ProfileModel())
             } else {
                 WelcomeView().environmentObject(AuthService())
             }
     }
 }
-
-/*
-struct StartView_Previews: PreviewProvider {
-    @StateObject static var authService = AuthService()
-    
-    static var previews: some View {
-        if authService.signedIn {
-            ContentView().environmentObject(authService)
-        } else {
-            WelcomeView().environmentObject(authService)
-        }
-    }
-}*/
 
 #Preview {
     StartView().environmentObject(AuthService())
