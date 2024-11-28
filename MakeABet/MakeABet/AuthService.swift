@@ -10,6 +10,9 @@ import FirebaseCore
 import FirebaseAuth
 import FirebaseFirestore
 
+/**
+ This class facilitates user login and account creation
+ */
 class AuthService: ObservableObject {
     
     @Published var signedIn: Bool = false
@@ -42,6 +45,10 @@ class AuthService: ObservableObject {
         
     }
     
+    /**
+     Create a document in the "users" chart on FB containing user information
+     Contains email, username, and lineup
+     */
     func createUserDocument(email: String, username: String) async {
         Task {
             do {
@@ -62,6 +69,9 @@ class AuthService: ObservableObject {
         }
     }
     
+    /**
+        Retrieves an existing user document from firebase by email
+     */
     func loadUserDocument() async {
         guard !email.isEmpty else {
             print("Error: email is empty, cannot load user document")
@@ -91,7 +101,9 @@ class AuthService: ObservableObject {
     }
     
     // MARK: - Password Account
-    // Creates new account with email, password, and username
+    /**
+     Creates new account with email, password, and username
+     */
     func regularCreateAccount(email: String, password: String, username: String) async throws {
             Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
                 if let e = error {
@@ -113,7 +125,9 @@ class AuthService: ObservableObject {
         }
     
     // MARK: - Traditional sign in
-    // Traditional sign in with password and email
+    /**
+     Traditional sign in using password and email
+     */
     func regularSignIn(email:String, password:String, completion: @escaping (Error?) -> Void) {
         Auth.auth().signIn(withEmail: email, password: password) {  authResult, error in
             if let e = error {
@@ -130,8 +144,10 @@ class AuthService: ObservableObject {
         }
     }
     
-    // Regular password acount sign out.
-    // Closure has whether sign out was successful or not
+    /**
+     Regular password acount sign out.
+     Closure has whether sign out was successful or not
+     */
     func regularSignOut(completion: @escaping (Error?) -> Void) {
         let firebaseAuth = Auth.auth()
         do {

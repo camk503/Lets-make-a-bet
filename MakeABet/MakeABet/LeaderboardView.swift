@@ -9,20 +9,20 @@ import SwiftUI
 import FirebaseCore
 import FirebaseFirestore
 
+/**
+ Shows the current leaderboard among all users, sorted in descending order
+ */
 struct LeaderboardView : View {
     @State var isLoading : Bool = true
     @State var lineup : [String] = []
     @State var userDict : [String: Float] = [:]
     @State var sortedDict : [String: Float] = [:]
     @State private var errorMessage: String?
-    //@State var count : Int = 0
     
     private let profileModel = ProfileModel()
     
     var body : some View {
         VStack {
-            //Color.gray.opacity(0.1).ignoresSafeArea()
-            
             Text("Leaderboard")
                 .font(.largeTitle)
                 .fontWeight(.bold)
@@ -78,8 +78,9 @@ struct LeaderboardView : View {
     }
 }
 
-
-
+/**
+ Card to represent each user
+ */
 struct LeaderboardCardView: View {
     let username: String
     let score: Float
@@ -112,8 +113,6 @@ struct LeaderboardCardView: View {
         .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
     }
 }
-
-
 
 #Preview() {
     LeaderboardView()

@@ -12,10 +12,12 @@ import SwiftUI
  Takes in an Artist object from SearchView
  */
 struct ArtistSearchView: View {
-    @State private var isLoading : Bool = true
+    // Variables passed in as params
     var artist : Artist
     var image : String?
     var position : Int
+    
+    @State private var isLoading : Bool = true
     
     private let DEFAULT : String = "https://lastfm.freetls.fastly.net/i/u/34s/2a96cbd8b46e442fc41c2b86b821562f.png"
     
@@ -23,6 +25,7 @@ struct ArtistSearchView: View {
     
     var body: some View {
         VStack(alignment: .center) {
+            // Display artist image
             if let imageString = image, let imageURL = URL(string: imageString) {
                 
                 AsyncImage (
@@ -38,6 +41,7 @@ struct ArtistSearchView: View {
                     }
                 )
                 
+            // If no image, show default
             } else {
                 let placeholderURL = URL(string: DEFAULT)
                 
@@ -53,6 +57,7 @@ struct ArtistSearchView: View {
                     }
                 )
             }
+            // Artist name and position on chart
             HStack(alignment: .center) {
                 Text("#\(position)")
                     .font(.title)
@@ -60,7 +65,6 @@ struct ArtistSearchView: View {
                     .foregroundColor(.pink)
                     .frame(minWidth: 60, alignment: .center)
                 
-                // Artist Information
                 Text("\(artist.name.capitalized)")
                     .font(.title)
                     .fontWeight(.semibold)
@@ -68,8 +72,8 @@ struct ArtistSearchView: View {
                     .multilineTextAlignment(.center)
             }
             
+            // Artist information
             HStack(spacing: 20) {
-                // Text("#\(position)")
                 VStack(alignment: .leading) {
                     Text("LISTENERS")
                         .font(.system(size: 8))
@@ -88,6 +92,7 @@ struct ArtistSearchView: View {
                 }
             }
             
+            // Add to lineup if not there already
             if (!profileModel.lineup.contains(artist.name)){
                 Button(action: {
                     profileModel.lineup.append(artist.name)
@@ -123,7 +128,6 @@ struct ArtistSearchView: View {
     }
   
 }
-
 
 #Preview {
     ArtistSearchView(artist: Artist(name: "Radiohead", playcount: "1", listeners: "1", mbid: "XXX", url: "radiohead.com", image: [Image(text: "https://e-cdns-images.dzcdn.net/images/artist/9508c1217e880b52703a525d1bd5250c/250x250-000000-80-0-0.jpg", size: "small")]), position: 1)

@@ -4,11 +4,18 @@
 //
 //  Created by Olivia Alexander on 10/17/24.
 //
+// HELPFUL DOCS
+// Store info with Firebase: https://firebase.google.com/docs/reference/swift/firebaseauth/api/reference/Classes/AdditionalUserInfo#/c:objc(cs)FIRAdditionalUserInfo(py)newUser
+// Adding Firebase to Project: https://firebase.google.com/docs/ios/setup
+
 
 import SwiftUI
 import FirebaseCore
 import FirebaseFirestore
 
+/**
+ Displays the user's profile information
+ */
 struct ProfileView : View {
     var preferNotifications = true
     
@@ -17,7 +24,6 @@ struct ProfileView : View {
     
     @EnvironmentObject var authService: AuthService
     @EnvironmentObject var profileModel : ProfileModel
-
     
     var body : some View
     {
@@ -31,6 +37,7 @@ struct ProfileView : View {
                         .padding(.top)
                         .foregroundColor(.pink)
                     
+                    // Classic profile image
                     SwiftUI.Image(systemName: "person.circle")
                         .resizable()
                         .scaledToFit()
@@ -43,10 +50,12 @@ struct ProfileView : View {
                         .font(.system(size: 20))
                         .foregroundColor(.pink)
                     
+                    // Display current score
                     Text("Your Score: \(String(format: "%.0f", profileModel.currentScore))")
                         .fontWeight(.semibold)
                         .font(.subheadline)
                     
+                    // Button directs back to welcome page
                     Button("Log out") {
                         print("Log out tapped!")
                         authService.regularSignOut { error in
@@ -56,13 +65,7 @@ struct ProfileView : View {
                             }
                         }
                     }
-                    
-                    
-                    //Store info with Firebase
-                    //https://firebase.google.com/docs/reference/swift/firebaseauth/api/reference/Classes/AdditionalUserInfo#/c:objc(cs)FIRAdditionalUserInfo(py)newUser
-                    //Adding Firebase to Project
-                    // https://firebase.google.com/docs/ios/setup
-                    
+                
                 }.navigationTitle("Profile")
                    
             }

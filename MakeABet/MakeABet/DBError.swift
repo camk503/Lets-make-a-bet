@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 enum DBError: Error {
     case registrationFailed(errorMessage: String)
     case loginFailed(errorMessage: String)

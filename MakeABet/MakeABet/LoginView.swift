@@ -14,7 +14,6 @@ struct LoginView: View {
     @Environment(\.dismiss) var dismiss
     
     @State var loginError : String = ""
-    //@State var passError : String = ""
     
     var body: some View {
             ZStack {
@@ -22,7 +21,6 @@ struct LoginView: View {
                     .ignoresSafeArea()
                 
                 VStack() {
-                    // Spacer()
                     Text("Let's Make A Bet")
                         .font(.largeTitle)
                         .fontWeight(.bold)
@@ -36,6 +34,7 @@ struct LoginView: View {
                         .foregroundColor(.gray)
                         .padding(.bottom, 30)
                     
+                    // Prompt for user account info (email and password)
                     TextField("Email", text: $email)
                         .padding()
                         .background(Color.white)
@@ -45,12 +44,10 @@ struct LoginView: View {
                             RoundedRectangle(cornerRadius: 10)
                                 .stroke(loginError.isEmpty ? Color.clear : Color.red, lineWidth: 2)
                         )
-                    
                         .shadow(color:.gray.opacity(0.3), radius: 10, x: 0, y: 3)
                         .textInputAutocapitalization(.never)
                         .disableAutocorrection(true)
             
-                
                     SecureField("Password", text: $password)
                         .padding()
                         .background(Color.white)
@@ -63,23 +60,16 @@ struct LoginView: View {
                         .shadow(color:.gray.opacity(0.3), radius: 10, x: 0, y: 3)
                         .textInputAutocapitalization(.never)
                         .disableAutocorrection(true)
-                
-                    
+            
                     // Display error message if there is one
                     if !loginError.isEmpty {
                         Text(loginError)
                             .font(.footnote)
                             .foregroundColor(.red)
                             .padding(.top, 5)
-                    }/* else if !emailError.isEmpty {
-                        Text(emailError)
-                            .font(.footnote)
-                            .foregroundColor(.red)
-                            .padding(.top, 5)
-                    }*/
-                    
-                    
-                    
+                    }
+
+                    // Button logs user in or throws error
                     Button("Login") {
                         authService.regularSignIn(email: email, password: password) { error in
                             if let e = error {
@@ -96,6 +86,7 @@ struct LoginView: View {
                     .cornerRadius(10)
                     .padding(.top, 10)
                     
+                    // Direct to create account page if new user
                     HStack {
                         Text("Don't have an account?")
                             .foregroundColor(.gray)
@@ -106,8 +97,7 @@ struct LoginView: View {
                             Text("Create Account").foregroundColor(.blue)
                         }
                     }.padding(.top, 20)
-                    
-                    //Spacer()
+
                 }
                 .padding(.horizontal, 30)
                 
@@ -115,8 +105,6 @@ struct LoginView: View {
     }
 }
 
-struct LoginView_Previews: PreviewProvider {
-    static var previews: some View {
-        LoginView()
-    }
+#Preview {
+    LoginView()
 }

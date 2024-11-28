@@ -7,33 +7,31 @@
 
 import SwiftUI
 
+/**
+ Displays the top 50 artist charts
+ */
 struct ChartsView: View {
     @EnvironmentObject var connect : LastAPI
     @EnvironmentObject var manager : FirebaseManager
     
-    // @State private var lastLoadedIndex = 0
-    // private let batchSize = 10 // Number of images to load per batch
-    
     @State var movement : String = ""
     
-    // TODO: If isLoading for too long, give error message
     var body: some View {
         
         // To allow for navigation between ArtistView and ArtistInfoView
         NavigationView {
             ZStack {
-                // Color.gray.opacity(0.1)
                 VStack {
+                    // Show spinning wheel while loading data
                     if connect.isLoading {
                         ProgressView("Loading top artists...")
                             .progressViewStyle(CircularProgressViewStyle(tint: .pink))
                     }
                     else {
-                        
                         if !connect.topArtists.isEmpty {
                             let _ = manager.updateArtistScores(topArtists: connect.topArtists)
                             ScrollView {
-                                // Heading
+                                // Chart header
                                 Text("Global Top 50")
                                     .font(.largeTitle)
                                     .fontWeight(.bold)
@@ -50,7 +48,6 @@ struct ChartsView: View {
                                         // Get movement of artist on chart
                                         let movement = manager.updateMovement(for: artist.name, at: index)
                                         
-                                        
                                         // Print artist info to page
                                         ArtistView (
                                             artist: artist,
@@ -59,17 +56,14 @@ struct ChartsView: View {
                                             movement: movement)
                                         .buttonStyle(PlainButtonStyle())
                                         .onAppear() {
+                                            // Load image as each view appears to avoid complications
                                             if connect.images[artist.name] == nil {
-                                                
-                                                //connect.isLoadingImage = true
                                                 connect.fetchImage(artist: artist.name) { result in
                                                     switch result {
                                                     case .success(let images):
                                                         connect.images[artist.name] = images.first?.picture_big
-                                                        //connect.isLoadingImage = false
                                                     case .failure(let error):
                                                         print("Error loading image for \(artist.name): \(error)")
-                                                        //connect.isLoadingImage = false
                                                     }
                                                 }
                                             }
@@ -80,8 +74,6 @@ struct ChartsView: View {
                             }.padding()
                                 .background(Color.white.opacity(0.95))
                                 .cornerRadius(10)
-                            
-                            
                         } else {
                             Text("No artists available :(")
                                 .font(.headline)
@@ -93,19 +85,11 @@ struct ChartsView: View {
                                 .foregroundColor(.gray)
                         }
                     }
-                    
                 }
                 .padding()
-                .onAppear() {
-                    
-                    //connect.loadData(limit: 50)
-                }
-                
-            }//.navigationTitle("Charts")
-                .background(Color.gray.opacity(0.1))
+            }.background(Color.gray.opacity(0.1))
         }
     }
-    
 }
 
 #Preview {

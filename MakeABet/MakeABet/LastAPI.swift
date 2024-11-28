@@ -14,16 +14,18 @@
 import Foundation
 import SwiftUI
 
+/**
+ Facilitates connection to Last.fm API for chart data and Deezer API for images
+ */
 class LastAPI : ObservableObject {
     private let APIKey : String = "9e1855dd72c6c6933bae914bd3099bd4"
     private let baseURL : String = "https://ws.audioscrobbler.com/2.0/"
     
-    @Published var isLoading : Bool /*= true*/
+    @Published var isLoading : Bool
     @Published var isLoadingImage : Bool
-    @Published var topArtists : [Artist] /*= []*/
-    @Published var allArtists : [Artist] /*= []*/
-    @Published var images : [String:String] /*= [:]*/
-    
+    @Published var topArtists : [Artist]
+    @Published var allArtists : [Artist]
+    @Published var images : [String:String]
     
     init () {
         self.isLoading = true
@@ -34,8 +36,9 @@ class LastAPI : ObservableObject {
         
         self.loadData(limit: 999)
     }
+    
     /**
-        This function gets the current top artists for the week from Last.fm's API
+        This function gets the current top artists up to a given limit for the week from Last.fm's API
      */
     func fetchTopArtists(limit: Int, completion: @escaping (Result<[Artist], Error>) -> Void) {
         if (limit < 1 || limit > 1000) {
@@ -43,6 +46,7 @@ class LastAPI : ObservableObject {
             return
         }
 
+        // Build the URL
         var urlBuilder = URLComponents(string: baseURL)
         
         // Define array of query items (key-val pairs)
@@ -51,7 +55,6 @@ class LastAPI : ObservableObject {
             URLQueryItem(name: "api_key", value: APIKey),
             URLQueryItem(name: "format", value: "json"),
             URLQueryItem(name: "limit", value: String(limit))
-            //URLQueryItem(name: "page", value: "1")
         ]
         
         // API request
@@ -87,7 +90,11 @@ class LastAPI : ObservableObject {
 
     }
     
+    /**
+     Gets a single artist's information from the API using the artist's name
+     */
     func fetchArtist(artist: String, completion: @escaping (Result<ArtistInfo, Error>) -> Void) {
+        // Build URL
         var urlBuilder = URLComponents(string: baseURL)
         
         // Define array of query items (key-val pairs)
@@ -96,7 +103,6 @@ class LastAPI : ObservableObject {
             URLQueryItem(name: "artist", value: artist),
             URLQueryItem(name: "api_key", value: APIKey),
             URLQueryItem(name: "format", value: "json")
-            
         ]
         
         // API request
@@ -132,9 +138,15 @@ class LastAPI : ObservableObject {
         
     }
     
-    /* DEEZER IMAGES */
+    /**
+        Connects to Deezer API to get the image for a given artist
+        Last.fm does not provide images for artists
+     */
     func fetchImage(artist: String, retries: Int = 3, delay: TimeInterval = 1.0, completion: @escaping (Result<[DeezArtistInfo], Error>) -> Void) {
+        
         let deezerBaseURL : String = "https://api.deezer.com/search/artist"
+        
+        // Build URL
         var urlBuilder = URLComponents(string: deezerBaseURL)
         urlBuilder?.queryItems = [
             URLQueryItem(name: "q", value: artist)
@@ -148,7 +160,6 @@ class LastAPI : ObservableObject {
         
         // API Request
         let session = URLSession.shared
-        // let url = urlBuilder?.url
         
         // Create task
         let task = session.dataTask(with: url) { data, response, error in
@@ -187,7 +198,10 @@ class LastAPI : ObservableObject {
         task.resume()
     }
     
-    
+    /**
+        Numbers from the API  (i.e. playcoount and listeners) does not include commas
+        This function adds commas where appropriate to numbers 4 figures and up
+     */
     static func formatNumber(number: String) -> String {
         var formattedNumber : String = ""
         
@@ -209,9 +223,14 @@ class LastAPI : ObservableObject {
         } else {
             formattedNumber = number
         }
-        return formattedNumber
         
+        return formattedNumber
     }
+    
+    /**
+     This function loads data from the API given a limit
+     Helps avoid duplicate loading code
+     */
     func loadData(limit: Int) {
         // Load data only if not already loaded
         if (limit < 999 && topArtists.isEmpty) || (limit > 50 && allArtists.isEmpty) {

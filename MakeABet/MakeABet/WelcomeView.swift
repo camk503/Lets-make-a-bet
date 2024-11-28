@@ -9,6 +9,9 @@ import SwiftUI
 import FirebaseCore
 import FirebaseFirestore
 
+/**
+ Beginning view of app, prompts user to log into existing account or create new account
+ */
 struct WelcomeView: View {
     @State private var email: String = ""
     @State private var password: String = ""
@@ -21,7 +24,7 @@ struct WelcomeView: View {
     let db = Firestore.firestore()
     @State var createError : String = ""
     
-    
+    // Prompt auth service to sign into existing account
     func signIn() {
         Task {
             do {
@@ -33,6 +36,7 @@ struct WelcomeView: View {
         }
     }
     
+    // Prompt auth service to create new account
     func createAccount() {
         Task {
             do {
@@ -45,6 +49,7 @@ struct WelcomeView: View {
         }
     }
     
+    // Store user info in firebase
     func createUserDocument() {
         Task {
             do {
@@ -83,7 +88,7 @@ struct WelcomeView: View {
                         .foregroundColor(.gray)
                         .padding(.bottom, 30)
                     
-                    // Email and password fields
+                    // Email field
                     TextField("Email", text: $email)
                         .padding()
                         .background(Color.white)
@@ -98,7 +103,7 @@ struct WelcomeView: View {
                         .textInputAutocapitalization(.never)
                         .disableAutocorrection(true)
                     
-                    // Username
+                    // Username field
                     TextField("Username", text: $username)
                         .padding()
                         .background(Color.white)
@@ -113,6 +118,7 @@ struct WelcomeView: View {
                         .textInputAutocapitalization(.never)
                         .disableAutocorrection(true)
                 
+                    // Password field
                     SecureField("Password", text: $password)
                         .padding()
                         .background(Color.white)
@@ -126,6 +132,7 @@ struct WelcomeView: View {
                         .textInputAutocapitalization(.never)
                         .disableAutocorrection(true)
                     
+                    // Show error if there is one
                     if !authService.errorDescription.isEmpty {
                         Text(authService.errorDescription)
                             .font(.footnote)
@@ -160,12 +167,6 @@ struct WelcomeView: View {
     }
 }
 
-func getErrorDescription() {
-    
-}
-
-struct WelcomeView_Previews: PreviewProvider {
-    static var previews: some View {
-        WelcomeView().environmentObject(AuthService())
-    }
+#Preview {
+    WelcomeView().environmentObject(AuthService())
 }

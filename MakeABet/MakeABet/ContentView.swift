@@ -17,8 +17,8 @@ struct ContentView: View {
     
     var body: some View {
         VStack(spacing: 0) {
+            // Top bar persists for all views
             HStack() {
-                // Top Bar
                 Text("Let's Make A Bet")
                     .foregroundColor(.pink)
                     .fontWeight(.bold)
@@ -26,7 +26,7 @@ struct ContentView: View {
                     .padding()
                 
                 Spacer()
-                
+    
                 Text(" Score: \(String(format: "%.0f", profileModel.currentScore))")
                     .fontWeight(.bold)
                     .padding(4)
@@ -36,12 +36,9 @@ struct ContentView: View {
                     .font(.headline)
                     .padding()
                 
-                
             }.background(.gray.opacity(0.1))
-            
-
+        
             Divider()
-            
             
             TabView() {
                 // Home View
@@ -84,16 +81,6 @@ struct ContentView: View {
     }
 }
 
-/*
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-            //.environmentObject(AuthService())
-            .environmentObject(LastAPI())
-            .environmentObject(FirebaseManager())
-            .environmentObject(ProfileModel())
-    }
-}*/
 #Preview {
     ContentView()
         .environmentObject(AuthService())

@@ -7,18 +7,16 @@
 
 import SwiftUI
 
+/**
+ Shows the user's current artist lineup
+ */
 struct LineupView: View {
-    // @State private var lineup: [String] = []
-    // @State private var currentScore: Float = 0
-    // @State private var isLoading: Bool = true
     @State private var errorMessage: String?
-    
     @State var connect : LastAPI = LastAPI()
     @State var artist : ArtistInfo? = nil
 
     @EnvironmentObject var profileModel : ProfileModel
     @EnvironmentObject var manager : FirebaseManager
-    
 
     var body: some View {
         ZStack() {
@@ -39,6 +37,7 @@ struct LineupView: View {
                     Text(errorMessage)
                         .foregroundColor(.red)
                         .padding()
+                // Lineup empty, prompt user to add artists
                 } else if profileModel.lineup.isEmpty {
                     Text("Your lineup is empty!")
                         .font(.title2)
@@ -49,6 +48,7 @@ struct LineupView: View {
                         .foregroundColor(.gray)
                         .fontWeight(.semibold)
                         .padding()
+                // Display lineup as a scrollable list
                 } else {
                     ScrollView {
                         VStack(spacing: 16) {
@@ -69,7 +69,9 @@ struct LineupView: View {
 
 }
 
-
+/**
+ Card to represent each individual artist on the lineup
+ */
 struct LineupCardView: View {
     let artistName: String
     let position: Int

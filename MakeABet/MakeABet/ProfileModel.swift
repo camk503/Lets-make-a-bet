@@ -12,6 +12,9 @@ import FirebaseFirestore
 
 let MAX_NUM_ARTISTS = 10
 
+/**
+ Facilitates in adding artists to lineup and storing lineups for each user
+ */
 class ProfileModel : ObservableObject {
     private let db = Firestore.firestore()
 
@@ -29,7 +32,6 @@ class ProfileModel : ObservableObject {
         self.fetchScore()
         self.fetchLineup()
     }
-    
     
     func setLineup(artists: [String], completion: ((Result<Void, Error>) -> Void)? = nil) {
         guard let userEmail = Auth.auth().currentUser?.email else {
@@ -119,10 +121,10 @@ class ProfileModel : ObservableObject {
             if let error = error {
                 completion?(.failure(error))
             } else if let document = document, document.exists, let data = document.data(), let lineup = data["lineup"] as? [String]{
-                //for artist in lineup grab
+                // for artist in lineup grab
                 var totalScore : Float = 0
                 for artist in lineup {
-                    //grab artist score from score document
+                    // grab artist score from score document
                     self.db.collection("scores").document(artist).getDocument() { scoreDoc, error in
                         if let error = error {
                             completion?(.failure(error))
@@ -138,8 +140,6 @@ class ProfileModel : ObservableObject {
                                     completion?(.success(totalScore))
                                 }
                             }
-                            
-                            //completion?(.success(totalScore))
 
                         } else {
                             completion?(.success(0))
@@ -157,7 +157,7 @@ class ProfileModel : ObservableObject {
     
     func getTopUsers(completion: ((Result< Dictionary<String, Float>, Error>) -> Void)? = nil) {
         var userDict: [String: Float] = [:]
-        //for user in users database
+        // for user in users database
         var username : String = ""
         var score : Float = 0
         
@@ -175,14 +175,11 @@ class ProfileModel : ObservableObject {
 
             }
         }
-        //sort userDict largest to smallest
-        //userDict = userDict.sorted(by: { $0.value > $1.value})
-        //completion?(.success(userDict))
 
     }
     
     // Function to avoid duplicate code
-    // Gets user score
+    // Gets user score and stores in published variable
     func fetchScore() {
         getUserScore() { result in
             DispatchQueue.main.async {
@@ -198,6 +195,9 @@ class ProfileModel : ObservableObject {
             }
         }
     }
+    
+    // Function to avoid duplicate code
+    // Gets user lineup and stores in published variable
     func fetchLineup() {
         getLineup() { result in
             DispatchQueue.main.async {

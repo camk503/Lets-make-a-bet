@@ -5,8 +5,7 @@
 //  Created by Hannah Sheridan on 11/11/24.
 //
 
-// NEED TO IMPORT THIS MODULE
-// MakeABet (App Store Icon at the top left) > Frameworks, Libraries, and Embedded Content > + > FirebaseFirestore
+// To Import: MakeABet (App Store Icon at the top left) > Frameworks, Libraries, and Embedded Content > + > FirebaseFirestore
 import FirebaseFirestore
 import Foundation
 
@@ -20,6 +19,9 @@ class FirebaseManager : ObservableObject {
         getLastWeeksChart()
     }
     
+    /**
+     Fetches the chart from seven days ago from firestore database
+     */
     func getLastWeeksChart() {
         db.collection("charts").getDocuments { (querySnapshot, error) in
             if let error = error {
@@ -64,6 +66,9 @@ class FirebaseManager : ObservableObject {
         
     }
     
+    /**
+     Function loads artist scores into firestore database "scores" table
+     */
     func updateArtistScores(topArtists: [Artist])
     {
         topArtists.forEach { artist in
@@ -202,7 +207,9 @@ class FirebaseManager : ObservableObject {
         }
     }
     
-    
+    /**
+        Calculates artist's score for the current week
+     */
     func calculateArtistScore(position: Int, lastPosition: Int) -> Float
     {
         var baseScore: Int = 0

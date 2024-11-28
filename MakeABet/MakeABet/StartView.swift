@@ -9,6 +9,9 @@ import SwiftUI
 import FirebaseCore
 import FirebaseAuth
 
+/**
+ Beginning of app, switches between welcome view and actual app based on log in status
+ */
 struct StartView: View {
     @EnvironmentObject var authService: AuthService
     

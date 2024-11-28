@@ -9,10 +9,12 @@
 
 import SwiftUI
 
-/* How an artist appears on the CHARTS
-Shows image, name, rank, playcount, and listeners */
+/**
+ How an artist appears on the CHARTS
+ Shows image, name, rank, playcount, and listeners
+ */
 struct ArtistView : View {
-    // Passed in thru constructor
+    // Variables passed in as params
     let artist : Artist
     let image : String?
     let position : Int
@@ -21,16 +23,19 @@ struct ArtistView : View {
     private let DEFAULT : String = "https://lastfm.freetls.fastly.net/i/u/34s/2a96cbd8b46e442fc41c2b86b821562f.png"
     
     var body : some View {
+        // Navigation link directs user to artist information page
         NavigationLink(destination: ArtistInfoView(name: artist.name, image: image, position: position)) {
             
             HStack(spacing: 15) {
             
+                // Position of artist on chart
                 Text("\(position)")
                     .font(.title)
                     .fontWeight(.bold)
                     .foregroundColor(.pink)
                     .frame(width: 40, alignment: .center)
         
+                // Display image
                 if let imageString = image, let imageURL = URL(string: imageString) {
                     AsyncImage (url: imageURL) { img in
                             img.resizable()
@@ -43,7 +48,8 @@ struct ArtistView : View {
                         placeholder: {
                             ProgressView()
                         }
-                                    
+                           
+                // If image not found, show default iamge
                 } else {
                     AsyncImage (url: URL(string: DEFAULT)) { img in
                             img.resizable()
@@ -58,8 +64,8 @@ struct ArtistView : View {
                         }
                 }
                 
-                // Show icon for movement
-                // Need to do SwiftUI.Image bc I defined my own
+                // Show icon to signify movement on chart
+                // NOTE: Need to use SwiftUI.Image bc I defined my own
                 // custom struct called Image
                 if movement == "up" {
                     SwiftUI.Image(systemName: "chevron.up.circle.fill")
@@ -103,10 +109,11 @@ struct ArtistView : View {
                     }
                     
                 }
+                // Icon to direct user to info page
                 SwiftUI.Image(systemName: "chevron.right")
                                     .foregroundColor(.pink)
                 
-            }//.buttonStyle(PlainButtonStyle())
+            }
             .padding(12)
                 .background(Color.white)
                 .cornerRadius(10)

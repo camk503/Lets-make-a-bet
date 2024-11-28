@@ -9,18 +9,19 @@ import FirebaseCore
 import FirebaseFirestore
 
 /**
- View to get the description of a music artist
+ View to get the description of a music artist from the charts page
  */
 struct ArtistInfoView : View {
+    // Variables passed in as params
+    let name : String
+    let image : String?
+    let position : Int
+
     @State var connect : LastAPI = LastAPI()
     @State var isLoading : Bool = true
     @State var artist : ArtistInfo? = nil
     @State var biography : String = ""
    
-    let name : String
-    let image : String?
-    let position : Int
-
     let db = Firestore.firestore()
     
     @EnvironmentObject var profileModel : ProfileModel
@@ -29,6 +30,7 @@ struct ArtistInfoView : View {
     
     var body : some View {
         VStack {
+            // Show spinning wheel if loading
             if isLoading {
                 ProgressView("Loading information for \(name)...")
                     .progressViewStyle(CircularProgressViewStyle(tint: .pink))
@@ -36,6 +38,7 @@ struct ArtistInfoView : View {
             // If not nil
             else if let artist = artist {
                 ScrollView() {
+                    // Display image
                     if let imageString = image,let imageURL = URL(string: imageString) {
                         
                         AsyncImage (
@@ -44,14 +47,8 @@ struct ArtistInfoView : View {
                                 img.resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: 250, height: 250)
-                                /*
-                                    .overlay(
-                                        Rectangle()
-                                            .stroke(Color.pink, lineWidth: 10)
-                                    )*/
+                            
                                     .padding(.top, 10)
-                                    // .padding(.bottom, 10)
-                                
                             },
                             placeholder: {
                                 ProgressView()
@@ -60,6 +57,7 @@ struct ArtistInfoView : View {
                         
                     }
                     
+                    // Artist name and position
                     HStack {
                         Text("#\(position)")
                             .font(.title)
@@ -70,6 +68,7 @@ struct ArtistInfoView : View {
                             .fontWeight(.bold)
                             .foregroundColor(.black)
                     }
+                    // Artist info
                     HStack(spacing: 20) {
                         VStack(alignment: .leading) {
                             Text("PLAYCOUNT")
@@ -121,6 +120,7 @@ struct ArtistInfoView : View {
             
             Spacer()
             
+            // Add to lineup on press if not there already
             if (!profileModel.lineup.contains(name)){
                 Button(action: {
                     profileModel.lineup.append(name)
@@ -152,7 +152,10 @@ struct ArtistInfoView : View {
         }
         .padding()
         .onAppear() {
+            // Get current score
             profileModel.fetchScore()
+            
+            // Get artist information from API
             if (isLoading) {
                 connect.fetchArtist(artist: name) { result in
                     switch result {
@@ -161,7 +164,6 @@ struct ArtistInfoView : View {
                         print("SUCCESS!")
                         self.isLoading = false
                         self.artist = fetchedArtist
-                        
                         self.formatBiography()
                         
                     case .failure(let error):

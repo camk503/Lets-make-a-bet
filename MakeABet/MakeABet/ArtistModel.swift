@@ -5,6 +5,9 @@
 //  Created by Hannah Sheridan on 10/23/24.
 //
 
+/**
+ This file contains structs to facilitate in parsing JSON data
+ */
 
 /* STRUCTS FOR TOP ARTISTS */
 struct TopArtists : Decodable  {
